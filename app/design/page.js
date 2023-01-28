@@ -2,18 +2,20 @@
 import Image from "next/image";
 import styles from "./Design.module.css";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
+import DragAndDrop from "./DragAndDrop";
 const App = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [x, setX] = useState(0);
+  const [y, setY] = useState(0);
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   let canvas = useRef(),
     printArea = useRef();
   const saveImage = async () => {
-    // printArea.current.style.width = "100vw";
-    // printArea.current.style.height = "100vh";
+    printArea.current.style.scale = "5";
+    printArea.current.style.scale = "5";
     const canvaselem = await html2canvas(printArea.current);
 
     const image = canvaselem.toDataURL();
@@ -40,16 +42,37 @@ const App = () => {
   function toggleImageFocus() {
     setIsImageFocused(true);
   }
+  let currentOffset, newXOffset, newYOffset;
   function handlePointerMove(e) {
-    if (!isDragging) return;
-    let x, y;
-    let previousOffset = x ?? 0;
+    const parentElement = e.target.parentElement;
 
-    x = e.clientX;
-    y = e?.clientY;
-    let currentOffset = x;
-    console.log(currentOffset - previousOffset);
-    // console.log(x, y);
+    if (!isDragging) return;
+
+    const rect = parentElement.getBoundingClientRect();
+    let xOffset = e.clientX - rect.left;
+    let yOffset = e.clientY - rect.top;
+    if (newXOffset > xOffset) {
+      setX(xOffset);
+    } else {
+      setX(-xOffset);
+    }
+    if (newYOffset > yOffset) {
+      setY(yOffset);
+    } else {
+      setY(-yOffset);
+    }
+    newXOffset = e.clientX - rect.left;
+    newYOffset = e.clientY - rect.top;
+
+    if (!Math.abs(currentOffset - e.clientX)) {
+      // setX(Math.abs(currentOffset - e.clientX));
+      // console.log(x);
+    }
+    currentOffset = e.clientX;
+
+    // xa = e.clientX;
+    // y = e?.clientY;    // console.log("🤔 > handlePointerMove > previousOffset", previousOffset);
+    // console.log("🤔 > handlePointerMove > currentOffset", currentOffset);
 
     setIsImageFocused(!isImageFocused);
   }
@@ -57,9 +80,6 @@ const App = () => {
     if (!isDragging) return;
     let x = e?.touches[0].clientX;
     let y = e.touches[0].clientY;
-
-    console.log("X:", x);
-    console.log("Y", y);
   }
   return (
     <div className={styles.main}>
@@ -90,42 +110,37 @@ const App = () => {
               >
                 <div className={styles.printArea} ref={printArea}>
                   {imgSrc &&
-                    imgSrc.map((source, index) => (
-                      <TransformWrapper disabled={true} key={index}>
-                        <TransformComponent>
-                          <div
-                            style={{
-                              position: "relative",
-                              left: `${0.02 * x}px`,
-                            }}
-                            onPointerMove={handlePointerMove}
-                            onTouchMove={handleTouchMove}
-                            onPointerDown={() => {
-                              toggleImageFocus();
-                              setIsDragging(true);
-                            }}
-                            onPointerUp={() => {
-                              setIsDragging(false);
-                            }}
-                            className={styles.imageContainer}
-                          >
+                    imgSrc.map((source, index) => {
+                      return (
+                        <div
+                          key={index}
+                          style={{}}
+                          onPointerMove={handlePointerMove}
+                          onTouchMove={handleTouchMove}
+                          onPointerDown={() => {
+                            toggleImageFocus();
+                            setIsDragging(true);
+                          }}
+                          onPointerUp={() => {
+                            setIsDragging(false);
+                          }}
+                          className={styles.imageContainer}
+                        >
+                          <DragAndDrop>
                             <Image
                               src={source}
                               width={200}
                               height={200}
                               alt={"hello"}
-                            ></Image>
-                          </div>
-                        </TransformComponent>
-                      </TransformWrapper>
-                    ))}
+                            ></Image>{" "}
+                          </DragAndDrop>
+                        </div>
+                      );
+                    })}
                 </div>
-                {/* <Image src={"/assets/tshirt-black.png"} fill alt="dk" /> */}
-                {/* <Image src={"/IPXSM-CS (1).png"} fill alt="dk" /> */}
               </div>
             </TransformComponent>
           </TransformWrapper>
-          {/* <Image src={"/anish.png"} width="200" height={200} alt="image3" /> */}
         </div>
       </div>
     </div>

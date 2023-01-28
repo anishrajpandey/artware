@@ -54,7 +54,6 @@ div.main div.right {
   position: relative;
   top: 22px;
   height: fit-content;
-  background-color: green;
 }
 @media (width < 700px) {
   div.main {
