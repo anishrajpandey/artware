@@ -5,17 +5,32 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./DragAndDrop";
+import { removeBackgroundFromImageBase64 } from "remove.bg";
+async function removeBg(base64img) {
+  const result = await removeBackgroundFromImageBase64({
+    base64img,
+    apiKey: "process.env.REMOVEBG_API_KEY",
+    size: "regular",
+    type: "auto",
+    crop: true,
+    scale: "100%",
+    outputFile: "/image.png",
+  });
+  return "successful";
+}
+
 const App = () => {
-  const [isDragging, setIsDragging] = useState(false);
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   let canvas = useRef(),
     printArea = useRef();
   const saveImage = async () => {
-    printArea.current.style.scale = "5";
-    printArea.current.style.scale = "5";
+    // printArea.current.style.width = "2160px";
+    // printArea.current.style.height = "1800px";
+
+    printArea.current.style.transform = "translate(0%, 0%)";
+    printArea.current.style.scale = "10";
+    printArea.current.style.transformOrigin = "top right";
     const canvaselem = await html2canvas(printArea.current);
 
     const image = canvaselem.toDataURL();
@@ -23,12 +38,25 @@ const App = () => {
     a.href = "data:" + image;
     a.download = "image.png";
     a.click();
+
+    printArea.current.style.scale = "1";
+    printArea.current.style.transform = "translate(50%, -50%)";
+    // removeBg("data:" + image).then((e) => console.log(e));
+    // canvas.current.style.backgroundImage = "none";
+    // canvas.current.style.backgroundColor = "transparent";
+
+    // const newcanvaselem = await html2canvas(canvas.current);
+
+    // const imageWithoutBackground = newcanvaselem.toDataURL();
+    // canvas.current.style.scale = "2";
+    // canvas.current.style.scale = "2";
+    // a.href = "data:" + imageWithoutBackground;
+    // a.download = "image-without-background.png";
+    // a.click();
+    // canvas.current.style.backgroundImage = `url("./../../public/assets/tshirt-black.png")`;
+    // canvas.current.style.backgroundColor = "royalblue";
   };
-  function handleMove(e) {
-    if (isDragging || true) {
-      console.log(e.clientX);
-    }
-  }
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     let reader = new FileReader();
@@ -42,45 +70,7 @@ const App = () => {
   function toggleImageFocus() {
     setIsImageFocused(true);
   }
-  let currentOffset, newXOffset, newYOffset;
-  function handlePointerMove(e) {
-    const parentElement = e.target.parentElement;
 
-    if (!isDragging) return;
-
-    const rect = parentElement.getBoundingClientRect();
-    let xOffset = e.clientX - rect.left;
-    let yOffset = e.clientY - rect.top;
-    if (newXOffset > xOffset) {
-      setX(xOffset);
-    } else {
-      setX(-xOffset);
-    }
-    if (newYOffset > yOffset) {
-      setY(yOffset);
-    } else {
-      setY(-yOffset);
-    }
-    newXOffset = e.clientX - rect.left;
-    newYOffset = e.clientY - rect.top;
-
-    if (!Math.abs(currentOffset - e.clientX)) {
-      // setX(Math.abs(currentOffset - e.clientX));
-      // console.log(x);
-    }
-    currentOffset = e.clientX;
-
-    // xa = e.clientX;
-    // y = e?.clientY;    // console.log("🤔 > handlePointerMove > previousOffset", previousOffset);
-    // console.log("🤔 > handlePointerMove > currentOffset", currentOffset);
-
-    setIsImageFocused(!isImageFocused);
-  }
-  function handleTouchMove(e) {
-    if (!isDragging) return;
-    let x = e?.touches[0].clientX;
-    let y = e.touches[0].clientY;
-  }
   return (
     <div className={styles.main}>
       <div className={styles.left}>
@@ -115,15 +105,10 @@ const App = () => {
                         <div
                           key={index}
                           style={{}}
-                          onPointerMove={handlePointerMove}
-                          onTouchMove={handleTouchMove}
                           onPointerDown={() => {
                             toggleImageFocus();
-                            setIsDragging(true);
                           }}
-                          onPointerUp={() => {
-                            setIsDragging(false);
-                          }}
+                          onPointerUp={() => {}}
                           className={styles.imageContainer}
                         >
                           <DragAndDrop>

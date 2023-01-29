@@ -1,6 +1,6 @@
 div.main {
   width: 100vw;
-  /* height: 100vh; */
+
   position: relative;
   height: fit-content;
   background-color: rgb(227, 233, 255);
@@ -42,18 +42,21 @@ div.main div.right {
 }
 .right .backgroundItem > .printArea {
   width: 40%;
-  height: 270px;
+  height: 370px;
   /* height: 45vw; */
+
   transform: translate(50%, -50%);
   top: 50%;
   right: 50%;
-  border: 2px dashed red;
+  border: 1px dashed red;
+
   position: absolute;
 }
 .right .backgroundItem > .printArea .imageContainer {
   position: relative;
-  top: 22px;
-  height: fit-content;
+  /* background-color: red; */
+  height: 200px;
+  width: 220px;
 }
 @media (width < 700px) {
   div.main {
