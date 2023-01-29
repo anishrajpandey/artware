@@ -42,7 +42,7 @@ div.main div.right {
 }
 .right .backgroundItem > .printArea {
   width: 40%;
-  height: 370px;
+  height: 330px;
   /* height: 45vw; */
 
   transform: translate(50%, -50%);

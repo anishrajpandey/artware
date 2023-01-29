@@ -11,7 +11,6 @@ const DragAndDrop = ({ children }) => {
       x: e.clientX || e?.touches[0].clientX,
       y: e.clientY || e?.touches[0].clientY,
     });
-    console.log(initialMousePosition);
     setIsDragging(true);
   };
   useEffect(() => {
