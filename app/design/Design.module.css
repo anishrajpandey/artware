@@ -54,7 +54,9 @@ div.main div.right {
 }
 .right .backgroundItem > .printArea .imageContainer {
   position: relative;
-  /* background-color: red; */
+  /* background-color: red;
+   */
+  z-index: 0;
   height: 200px;
   width: 220px;
 }

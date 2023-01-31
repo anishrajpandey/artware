@@ -42,7 +42,22 @@ const App = () => {
     console.log(imgSrc);
   };
 
-  function toggleImageFocus() {
+  function toggleImageFocus(e) {
+    //   e.target.parentElement ====> image container
+
+    console.log(e.target);
+    [...e.target.parentElement.parentElement.children].forEach((element) => {
+      element.children[0].children[0].style.outline = "none";
+    });
+
+    e.target.children[0].style.outline = "2px dotted black";
+    e.target.style.zIndex = +e.target.style.zIndex + 1;
+    setImgSrc(imgSrc);
+    console.log(e.target.style.zIndex);
+
+    setTimeout(() => {
+      e.target.children[0].style.outline = "none";
+    }, 3000);
     setIsImageFocused(true);
   }
   async function handleOrder() {
@@ -115,24 +130,25 @@ const App = () => {
                   {imgSrc &&
                     imgSrc.map((source, index) => {
                       return (
-                        <div
-                          key={index}
-                          style={{}}
-                          onPointerDown={() => {
-                            toggleImageFocus();
-                          }}
-                          onPointerUp={() => {}}
-                          className={styles.imageContainer}
-                        >
-                          <DragAndDrop>
+                        <DragAndDrop key={index}>
+                          <div
+                            onPointerDown={(e) => {
+                              toggleImageFocus(e);
+                            }}
+                            onPointerUp={() => {}}
+                            className={styles.imageContainer}
+                          >
                             <Image
+                              onClick={(e) => {
+                                console.log(e);
+                              }}
                               src={source}
                               width={200}
                               height={200}
-                              alt={"hello"}
+                              alt={"could not load image"}
                             ></Image>{" "}
-                          </DragAndDrop>
-                        </div>
+                          </div>
+                        </DragAndDrop>
                       );
                     })}
                 </div>
