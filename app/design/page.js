@@ -13,7 +13,6 @@ const App = () => {
   let canvas = useRef(),
     printArea = useRef();
 
-  const saveImage = async () => {};
   async function uploadToCloudinary(file) {
     const formData = new FormData();
     formData.append("file", file);
@@ -30,21 +29,13 @@ const App = () => {
   }
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-
     let reader = new FileReader();
-    // const formData = new FormData();
-    // formData.append("file", file);
-
     reader.onloadend = () => [setImgSrc([...imgSrc, reader.result])];
-    // reader.read(file);
-    let url = reader.readAsDataURL(file);
-
+    reader.readAsDataURL(file);
     console.log(imgSrc);
   };
 
   function toggleImageFocus(e) {
-    //   e.target.parentElement ====> image container
-
     console.log(e.target);
     [...e.target.parentElement.parentElement.children].forEach((element) => {
       element.children[0].children[0].style.outline = "none";
@@ -91,6 +82,8 @@ const App = () => {
     a.href = "data:" + imageWithProduct;
     a.download = "image-without-background.png";
     a.click();
+    canvas.current.style.scale = "1";
+
     uploadToCloudinary("data:" + imageWithProduct).then((res) => {
       console.log(res);
     });
@@ -110,9 +103,7 @@ const App = () => {
             onChange={handleImageUpload}
           />
         </div>
-        <div className={styles.addText} onClick={saveImage}>
-          Add Text
-        </div>
+        <div className={styles.addText}>Add Text</div>
         <button onClick={handleOrder}>Order Now</button>
       </div>
       <div className={styles.right}>
