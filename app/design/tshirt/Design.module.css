@@ -1,0 +1,104 @@
+div.main {
+  width: 100vw;
+
+  position: relative;
+  height: fit-content;
+  background-color: rgb(227, 233, 255);
+  display: flex;
+  flex-direction: row;
+}
+
+div.main div.left {
+  height: 100vh;
+  flex: 0.2;
+  border: 2px solid rgb(0, 51, 108);
+}
+div.main div.right {
+  height: 100vh;
+  flex: 0.8;
+}
+.right .editArea {
+  display: flex;
+  justify-content: flex-end;
+  width: 80vw;
+  /* height: 100vh; */
+  flex-direction: row;
+  align-items: center;
+  /* background-color: red; */
+}
+.right .backgroundItem {
+  background-image: url("./../../../public/assets/tshirts/tshirt-black.png");
+  /* background-image: url("./../public/IPXSM-CS (1).png"); */
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: royalblue;
+  position: relative;
+  width: min(80vw, 700px);
+  height: 100vh;
+  /* background-color: rgb(192, 255, 137); */
+  /* height: 100vw; */
+  /* background-color: royalblue; */
+}
+.right .backgroundItem > .printArea {
+  width: 40%;
+  height: 330px;
+  /* height: 45vw; */
+  overflow: hidden;
+  transform: translate(50%, -50%);
+  top: 50%;
+  right: 50%;
+  border: 1px dashed red;
+
+  position: absolute;
+}
+.right .backgroundItem > .printArea .imageContainer {
+  position: relative;
+  /* background-color: red;
+   */
+  z-index: 0;
+  height: 200px;
+  width: 220px;
+}
+@media (width < 700px) {
+  div.main {
+    flex-direction: column;
+  }
+
+  .right :is(.backgroundItem, .editArea) {
+    width: 100vw !important;
+  }
+  div.main div.right {
+    height: 100vh;
+    order: 2;
+  }
+  div.main div.right,
+  .right .backgroundItem {
+    height: 80vh;
+    /* background-color: red; */
+    width: 100vw;
+  }
+
+  div.main div.left {
+    height: 20vh;
+    /* position: absolute; */
+    bottom: 0px;
+    z-index: 3;
+    width: 100vw;
+
+    display: flex;
+    order: 3;
+    /* gap: 10px; */
+    flex-direction: column;
+    background-color: red;
+    padding-bottom: 12px;
+  }
+
+  div.main div.left button,
+  div.main div.left input {
+    /* width: 100px; */
+  }
+  .right .backgroundItem > .printArea {
+    height: 45vw;
+  }
+}
