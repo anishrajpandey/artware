@@ -57,11 +57,13 @@ const PhoneCoverDesign = () => {
     }, 3000);
     setIsImageFocused(true);
   }
-  function resizeImage(e) {
+  function resizeImageByWidth(e) {
     setIsImageFocused(!isImageFocused);
     imgSrc[focusedImageIndex].width = e.target.value;
-    console.log(imgSrc[focusedImageIndex].width);
-    setImgSrc(imgSrc);
+  }
+  function resizeImageByHeight(e) {
+    setIsImageFocused(!isImageFocused);
+    imgSrc[focusedImageIndex].height = e.target.value;
   }
 
   async function handleOrder() {
@@ -127,7 +129,14 @@ const PhoneCoverDesign = () => {
           className={styles.rangeForSize}
           min={0}
           max={100}
-          onChange={resizeImage}
+          onChange={resizeImageByWidth}
+        />
+        <input
+          type="range"
+          className={styles.rangeForSize}
+          min={0}
+          max={100}
+          onChange={resizeImageByHeight}
         />
       </div>
       <div className={styles.right}>
@@ -168,7 +177,7 @@ const PhoneCoverDesign = () => {
                               }}
                               src={source.src}
                               width={200 * 0.02 * source.width || 200}
-                              height={290 * 0.02 * source.width || 270}
+                              height={290 * 0.02 * source.height || 270}
                               alt={"could not load image"}
                             ></Image>{" "}
                           </div>

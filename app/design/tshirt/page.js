@@ -57,17 +57,14 @@ const App = () => {
     }, 3000);
     setIsImageFocused(true);
   }
-  function resizeImage(e) {
-    // setImgSrc((prev) => [
-    //   ...prev,
-    //   { src: prev[focusedImageIndex].src, width: e.target.value },
-    // ]);
+  function resizeImageByWidth(e) {
     setIsImageFocused(!isImageFocused);
     imgSrc[focusedImageIndex].width = e.target.value;
-    console.log(imgSrc[focusedImageIndex].width);
-    setImgSrc(imgSrc);
   }
-
+  function resizeImageByHeight(e) {
+    setIsImageFocused(!isImageFocused);
+    imgSrc[focusedImageIndex].height = e.target.value;
+  }
   async function handleOrder() {
     setIsLoading(true);
     imgSrc.forEach((image) => {
@@ -76,7 +73,6 @@ const App = () => {
 
     printArea.current.style.scale = "2";
     printArea.current.style.transform = "translate(0, 0)";
-
     printArea.current.style.transformOrigin = "top right";
     const canvaselem = await html2canvas(printArea.current);
 
@@ -128,7 +124,14 @@ const App = () => {
           className={styles.rangeForSize}
           min={0}
           max={100}
-          onChange={resizeImage}
+          onChange={resizeImageByWidth}
+        />
+        <input
+          type="range"
+          className={styles.rangeForSize}
+          min={0}
+          max={100}
+          onChange={resizeImageByHeight}
         />
       </div>
       <div className={styles.right}>
@@ -163,7 +166,7 @@ const App = () => {
                               }}
                               src={source.src}
                               width={200 * 0.02 * source.width || 200}
-                              height={200 * 0.02 * source.width || 200}
+                              height={200 * 0.02 * source.height || 200}
                               alt={"could not load image"}
                             ></Image>{" "}
                           </div>
