@@ -3,6 +3,14 @@
   padding: 0;
 }
 .orderNowButton {
-  background-color: green;
+  background-color: rgb(255, 88, 27);
+  color: #fff;
   width: min(250px, 100vw);
+  height: 30px;
+  font-weight: bold;
+  border: 1px solid black;
+  border-radius: 4px;
+  font-size: 1rem;
+  position: absolute;
+  bottom: 20px;
 }

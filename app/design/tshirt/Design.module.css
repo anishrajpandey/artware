@@ -13,6 +13,25 @@ div.main div.left {
   flex: 0.2;
   border: 2px solid rgb(0, 51, 108);
 }
+
+div.main div.left .Tshirtsvariation {
+  display: flex;
+  flex-wrap: wrap;
+}
+div.main div.left .Tshirtsvariation div {
+  padding: 10px;
+  display: grid;
+  place-items: center;
+  /* background-color: rgb(11, 195, 232); */
+  border: 1px solid black;
+  margin: 2px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 100ms;
+}
+div.main div.left .Tshirtsvariation div:hover {
+  background-color: rgb(250, 207, 207);
+}
 div.main div.right {
   height: 100vh;
   flex: 0.8;
@@ -28,7 +47,7 @@ div.main div.right {
 }
 .right .backgroundItem {
   background-image: url("./../../../public/assets/tshirts/tshirt-black.png");
-  /* background-image: url("./../public/IPXSM-CS (1).png"); */
+
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;

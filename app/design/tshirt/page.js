@@ -5,8 +5,26 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
+import BlackTshirt from "./../../../public/assets/tshirts/tshirt-black.png";
+import PinkTshirt from "./../../../public/assets/tshirts/t-pink.png";
+import WhiteTshirt from "./../../../public/assets/tshirts/t-white.png";
+import BlueTshirt from "./../../../public/assets/tshirts/t-blue.png";
+import RedTshirt from "./../../../public/assets/tshirts/t-red.png";
+import YellowTshirt from "./../../../public/assets/tshirts/t-yellow.png";
+import BlackSweatShirt from "./../../../public/assets/tshirts/s-black.png";
+import OrangeweatShirt from "./../../../public/assets/tshirts/s-orange.png";
 
 const App = () => {
+  const Tshirts = [
+    BlackTshirt,
+    PinkTshirt,
+    WhiteTshirt,
+    BlueTshirt,
+    RedTshirt,
+    YellowTshirt,
+    BlackSweatShirt,
+    OrangeweatShirt,
+  ];
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,7 +121,11 @@ const App = () => {
     console.log("all images uploaded");
     setIsLoading(false);
   }
-
+  const handleTshirtChange = async (e, src) => {
+    if (src) {
+      canvas.current.style.backgroundImage = `url(${src})`;
+    }
+  };
   return (
     <div className={styles.main} style={{ opacity: isLoading ? "0.1" : "1" }}>
       <div className={styles.left}>
@@ -136,6 +158,27 @@ const App = () => {
           max={100}
           onChange={resizeImageByHeight}
         />
+        <h3>More Variations</h3>
+        <div className={styles.Tshirtsvariation}>
+          {Tshirts.map((Tshirt, index) => {
+            return (
+              <div
+                key={index}
+                className={styles.Tshirts}
+                onClick={(e) => {
+                  handleTshirtChange(e, Tshirt.src);
+                }}
+              >
+                <Image
+                  src={Tshirt}
+                  alt=""
+                  style={{ pointerEvents: "none" }}
+                  width={50}
+                ></Image>
+              </div>
+            );
+          })}
+        </div>
       </div>
       <div className={styles.right}>
         <div className={styles.editArea}>

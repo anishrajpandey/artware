@@ -135,9 +135,6 @@ const App = () => {
           />
         </div>
         <div className={styles.addText}>Add Text</div>
-        <button onClick={handleOrder} className={"orderNowButton"}>
-          Order Now
-        </button>
 
         <br />
         <input
@@ -175,6 +172,9 @@ const App = () => {
             );
           })}
         </div>
+        <button onClick={handleOrder} className={"orderNowButton"}>
+          Order Now
+        </button>
       </div>
       <div className={styles.right}>
         <div className={styles.editArea}>
