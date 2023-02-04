@@ -11,6 +11,7 @@ import BlueMug from "./../../../public/assets/mugs/mug-blue.png";
 import YellowMug from "./../../../public/assets/mugs/mug-yellow.png";
 import BlackMug from "./../../../public/assets/mugs/mug-black.png";
 import WhiteMug from "./../../../public/assets/mugs/mug-white.png";
+import MugOrthographic from "../../../public/assets/mugs/two-way-mug.svg";
 const App = () => {
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
@@ -112,7 +113,7 @@ const App = () => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      canvas.current.style.backgroundImage = `url("/_next/static/media/two-way-mug.4f3a38f3.svg")`;
+      canvas.current.style.backgroundImage = `url(${MugOrthographic.src})`;
     } else {
       canvas.current.style.backgroundImage = `url(${
         Mugs[Math.floor(Math.random() * Mugs.length)].src
@@ -174,7 +175,9 @@ const App = () => {
             );
           })}
         </div>
-        <button onClick={handleOrder}>Order Now</button>
+        <button onClick={handleOrder} className={"orderNowButton"}>
+          Order Now
+        </button>
       </div>
       <div className={styles.right}>
         <div className={styles.editArea}>

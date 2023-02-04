@@ -5,19 +5,29 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
-import Cake1 from "./../../../public/assets/cakes/cake1.jpg";
-import Cake2 from "./../../../public/assets/cakes/cake2.jpg";
-import Cake3 from "./../../../public/assets/cakes/cake3.png";
-import SquareCake from "./../../../public/assets/cakes/cake-square.png";
+import BlackHoodie from "./../../../public/assets/hoodies/hoodie-black.png";
+import BlueHoodie from "./../../../public/assets/hoodies/hoodie-blue.png";
+import GrayHoodie from "./../../../public/assets/hoodies/hoodie-gray.png";
+import RedHoodie from "./../../../public/assets/hoodies/hoodie-red.png";
+import WhiteHoodie from "./../../../public/assets/hoodies/hoodie-white.png";
+import YellowHoodie from "./../../../public/assets/hoodies/hoodie-yellow.png";
 
 const App = () => {
+  const Hoodies = [
+    BlackHoodie,
+    BlueHoodie,
+    GrayHoodie,
+    RedHoodie,
+    WhiteHoodie,
+    YellowHoodie,
+  ];
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedImageIndex, setFocusedImageIndex] = useState();
   let canvas = useRef(),
     printArea = useRef();
-  const Cakes = [Cake1, Cake2, Cake3, SquareCake];
+
   async function uploadToCloudinary(file) {
     const formData = new FormData();
     formData.append("file", file);
@@ -107,14 +117,7 @@ const App = () => {
     console.log("all images uploaded");
     setIsLoading(false);
   }
-  const handleCakeChange = async (e, src, index) => {
-    if (index !== 3) {
-      printArea.current.children[0].children[0].children[0].style.borderRadius =
-        "50%";
-    } else {
-      printArea.current.children[0].children[0].children[0].style.borderRadius =
-        "0%";
-    }
+  const handleHoodieChange = async (e, src) => {
     if (src) {
       canvas.current.style.backgroundImage = `url(${src})`;
     }
@@ -131,6 +134,11 @@ const App = () => {
             onChange={handleImageUpload}
           />
         </div>
+        <div className={styles.addText}>Add Text</div>
+        <button onClick={handleOrder} className={"orderNowButton"}>
+          Order Now
+        </button>
+
         <br />
         <input
           type="range"
@@ -147,18 +155,18 @@ const App = () => {
           onChange={resizeImageByHeight}
         />
         <h3>More Variations</h3>
-        <div className={styles.Mugsvariation}>
-          {Cakes.map((cake, index) => {
+        <div className={styles.Hoodiesvariation}>
+          {Hoodies.map((Hoodie, index) => {
             return (
               <div
                 key={index}
-                className={styles.cakes}
+                className={styles.Hoodies}
                 onClick={(e) => {
-                  handleCakeChange(e, cake.src, index);
+                  handleHoodieChange(e, Hoodie.src);
                 }}
               >
                 <Image
-                  src={cake}
+                  src={Hoodie}
                   alt=""
                   style={{ pointerEvents: "none" }}
                   width={50}
@@ -167,9 +175,6 @@ const App = () => {
             );
           })}
         </div>
-        <button onClick={handleOrder} className={"orderNowButton"}>
-          Order Now
-        </button>
       </div>
       <div className={styles.right}>
         <div className={styles.editArea}>
@@ -178,7 +183,6 @@ const App = () => {
               <div
                 className={styles.backgroundItem}
                 ref={canvas}
-                // style={{ backgroundImage: `url(${RedMug.src})` }}
                 onClick={(e) => {
                   setIsImageFocused(!e.target.className.includes("background"));
                 }}
@@ -199,6 +203,9 @@ const App = () => {
                             className={styles.imageContainer}
                           >
                             <Image
+                              onClick={(e) => {
+                                console.log(e);
+                              }}
                               src={source.src}
                               width={200 * 0.02 * source.width || 200}
                               height={200 * 0.02 * source.height || 200}

@@ -122,7 +122,10 @@ const PhoneCoverDesign = () => {
           />
         </div>
         <div className={styles.addText}>Add Text</div>
-        <button onClick={handleOrder}>Order Now</button>
+        <button onClick={handleOrder} className={"orderNowButton"}>
+          Order Now
+        </button>
+
         <br />
         <input
           type="range"

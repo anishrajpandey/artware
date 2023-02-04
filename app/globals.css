@@ -2,3 +2,7 @@
   margin: 0;
   padding: 0;
 }
+.orderNowButton {
+  background-color: green;
+  width: min(250px, 100vw);
+}
