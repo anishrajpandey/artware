@@ -26,7 +26,7 @@ div.main div.right {
   align-items: center;
 }
 .right .backgroundItem {
-  background-image: url("./../../../public/assets/phonecovers/pc1-transparent.png");
+  /* background-image: url("./../../../public/assets/phonecovers/pc1-transparent.png"); */
 
   background-image: url("./../../../public/assets/phonecovers/pc-black.png");
   /* background-image: url("./../../../public/assets/phonecovers/pc-white.png"); */

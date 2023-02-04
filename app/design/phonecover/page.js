@@ -5,8 +5,12 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
+import BlackCover from "./../../../public/assets/phonecovers/pc-black.png";
+import WhiteCover from "./../../../public/assets/phonecovers/pc-white.png";
+import TransparentCover from "./../../../public/assets/phonecovers/pc1-transparent.png";
 
 const PhoneCoverDesign = () => {
+  const Covers = [BlackCover, WhiteCover, TransparentCover];
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -108,7 +112,14 @@ const PhoneCoverDesign = () => {
     console.log("all images uploaded");
     setIsLoading(false);
   }
-
+  const handleCoverChange = async (e, src) => {
+    if (e.target.value) {
+      canvas.current.style.backgroundColor = e.target.value;
+    }
+    if (src) {
+      canvas.current.style.backgroundImage = `url(${src})`;
+    }
+  };
   return (
     <div className={styles.main} style={{ opacity: isLoading ? "0.1" : "1" }}>
       <div className={styles.left}>
@@ -122,10 +133,6 @@ const PhoneCoverDesign = () => {
           />
         </div>
         <div className={styles.addText}>Add Text</div>
-        <button onClick={handleOrder} className={"orderNowButton"}>
-          Order Now
-        </button>
-
         <br />
         <input
           type="range"
@@ -141,9 +148,40 @@ const PhoneCoverDesign = () => {
           max={100}
           onChange={resizeImageByHeight}
         />
+        <h3>More Variations</h3>
+        <div className={styles.Coversvariation}>
+          {Covers.map((Cover, index) => {
+            return (
+              <div
+                key={index}
+                className={styles.Covers}
+                onClick={(e) => {
+                  handleCoverChange(e, Cover.src);
+                }}
+              >
+                <Image
+                  src={Cover}
+                  alt=""
+                  style={{ pointerEvents: "none" }}
+                  width={50}
+                ></Image>
+              </div>
+            );
+          })}
+        </div>
+        Choose your own color:
+        <input
+          type="color"
+          name="color"
+          id="colorinput"
+          onChange={handleCoverChange}
+        />
+        <button onClick={handleOrder} className={"orderNowButton"}>
+          Order Now
+        </button>
       </div>
       <div className={styles.right}>
-        <div className={styles.editArea} ref={canvas}>
+        <div className={styles.editArea}>
           <TransformWrapper disabled={isImageFocused}>
             <TransformComponent>
               <div
@@ -151,6 +189,7 @@ const PhoneCoverDesign = () => {
                 onClick={(e) => {
                   setIsImageFocused(!e.target.className.includes("background"));
                 }}
+                ref={canvas}
               >
                 <div className={styles.cameraLens}>
                   <Image
