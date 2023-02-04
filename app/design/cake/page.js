@@ -5,12 +5,11 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
-import RedMug from "./../../../public/assets/mugs/mug-red.png";
-import GreenMug from "./../../../public/assets/mugs/mug-green.png";
-import BlueMug from "./../../../public/assets/mugs/mug-blue.png";
-import YellowMug from "./../../../public/assets/mugs/mug-yellow.png";
-import BlackMug from "./../../../public/assets/mugs/mug-black.png";
-import WhiteMug from "./../../../public/assets/mugs/mug-white.png";
+import Cake1 from "./../../../public/assets/cakes/cake1.jpg";
+import Cake2 from "./../../../public/assets/cakes/cake2.jpg";
+import Cake3 from "./../../../public/assets/cakes/cake3.png";
+import SquareCake from "./../../../public/assets/cakes/cake-square.png";
+
 const App = () => {
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
@@ -18,7 +17,7 @@ const App = () => {
   const [focusedImageIndex, setFocusedImageIndex] = useState();
   let canvas = useRef(),
     printArea = useRef();
-  const Mugs = [RedMug, GreenMug, BlueMug, YellowMug, WhiteMug, BlackMug];
+  const Cakes = [Cake1, Cake2, Cake3, SquareCake];
   async function uploadToCloudinary(file) {
     const formData = new FormData();
     formData.append("file", file);
@@ -108,15 +107,13 @@ const App = () => {
     console.log("all images uploaded");
     setIsLoading(false);
   }
-  const handleMugChange = async (e, src) => {
-    const isChecked = e.target.checked;
-
-    if (isChecked) {
-      canvas.current.style.backgroundImage = `url("/_next/static/media/two-way-mug.4f3a38f3.svg")`;
+  const handleCakeChange = async (e, src, index) => {
+    if (index !== 3) {
+      printArea.current.children[0].children[0].children[0].style.borderRadius =
+        "50%";
     } else {
-      canvas.current.style.backgroundImage = `url(${
-        Mugs[Math.floor(Math.random() * Mugs.length)].src
-      })`;
+      printArea.current.children[0].children[0].children[0].style.borderRadius =
+        "0%";
     }
     if (src) {
       canvas.current.style.backgroundImage = `url(${src})`;
@@ -134,10 +131,7 @@ const App = () => {
             onChange={handleImageUpload}
           />
         </div>
-        <div className={styles.radio}>
-          <input type={"checkbox"} id="checkbox" onChange={handleMugChange} />
-          <label htmlFor="checkbox">Include Both sides</label>
-        </div>
+
         <br />
         <input
           type="range"
@@ -155,17 +149,17 @@ const App = () => {
         />
         <h3>More Variations</h3>
         <div className={styles.Mugsvariation}>
-          {Mugs.map((mug, index) => {
+          {Cakes.map((cake, index) => {
             return (
               <div
                 key={index}
-                className={styles.mugs}
+                className={styles.cakes}
                 onClick={(e) => {
-                  handleMugChange(e, mug.src);
+                  handleCakeChange(e, cake.src, index);
                 }}
               >
                 <Image
-                  src={mug}
+                  src={cake}
                   alt=""
                   style={{ pointerEvents: "none" }}
                   width={50}
@@ -183,7 +177,7 @@ const App = () => {
               <div
                 className={styles.backgroundItem}
                 ref={canvas}
-                style={{ backgroundImage: `url(${RedMug.src})` }}
+                // style={{ backgroundImage: `url(${RedMug.src})` }}
                 onClick={(e) => {
                   setIsImageFocused(!e.target.className.includes("background"));
                 }}
@@ -204,9 +198,6 @@ const App = () => {
                             className={styles.imageContainer}
                           >
                             <Image
-                              onClick={(e) => {
-                                console.log(e);
-                              }}
                               src={source.src}
                               width={200 * 0.02 * source.width || 200}
                               height={200 * 0.02 * source.height || 200}

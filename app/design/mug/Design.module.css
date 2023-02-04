@@ -10,35 +10,53 @@ div.main {
 
 div.main div.left {
   height: 100vh;
-  flex: 0.2;
-  border: 2px solid rgb(0, 51, 108);
+  flex: 0.4;
+  border: 2px solid rgb(255, 138, 115);
+  max-width: min(100vw, 300px);
+}
+div.main div.left .Mugsvariation {
+  display: flex;
+  flex-wrap: wrap;
+}
+div.main div.left .Mugsvariation div {
+  padding: 10px;
+  display: grid;
+  place-items: center;
+  /* background-color: rgb(11, 195, 232); */
+  border: 1px solid black;
+  margin: 2px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 100ms;
+}
+div.main div.left .Mugsvariation div:hover {
+  background-color: rgb(250, 207, 207);
 }
 div.main div.right {
   height: 100vh;
-  flex: 0.8;
+  flex: 0.6;
 }
 .right .editArea {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   width: 80vw;
+
   /* height: 100vh; */
   flex-direction: row;
   align-items: center;
   /* background-color: red; */
 }
 .right .backgroundItem {
-  background-image: url("./../../../public/assets/mugs/mug-white.png");
-  /* background-image: url("./../public/IPXSM-CS (1).png"); */
+  background-image: url("./../../../public/assets/mugs/mug-black.png");
+
   background-size: contain;
   background-position: center center;
   background-repeat: no-repeat;
-  background-color: royalblue;
-  position: relative;
-  width: min(80vw, 500px);
-  height: 100vh;
-  /* background-color: rgb(192, 255, 137); */
-  /* height: 100vw; */
   /* background-color: royalblue; */
+  position: relative;
+  width: min(80vw, 600px);
+  /* width: 80vw; */
+  height: 100vh;
 }
 .right .backgroundItem > .printArea {
   width: 69%;
@@ -52,12 +70,19 @@ div.main div.right {
   /* border: 1px dashed red; */
 }
 .right .backgroundItem > .printArea .imageContainer {
-  position: relative;
-  /* background-color: red;
-   */
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  /* background-color: red; */
+
   z-index: 0;
   height: 200px;
   width: 220px;
+}
+.right .backgroundItem > .printArea .imageContainer img {
+  /* position: absolute;
+  */
 }
 @media (width < 700px) {
   div.main {
@@ -84,12 +109,12 @@ div.main div.right {
     bottom: 0px;
     z-index: 3;
     width: 100vw;
-
+    min-width: 100vw;
     display: flex;
     order: 3;
     /* gap: 10px; */
     flex-direction: column;
-    background-color: red;
+    /* background-color: red; */
     padding-bottom: 12px;
   }
 
