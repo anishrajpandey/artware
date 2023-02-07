@@ -8,7 +8,7 @@ const Index = () => {
       <Link href={"/design/phonecover"}>Go to phone cover design page</Link>
       <Link href={"/design/hoodie"}>Go to hoodie design page</Link>
       <Link href={"/design/mug"}>Go to mug design page</Link>
-      <Link href={"/design/cakes"}>Go to cakes design page</Link>
+      <Link href={"/design/cake"}>Go to cakes design page</Link>
     </div>
   );
 };
