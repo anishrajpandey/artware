@@ -2,11 +2,27 @@
 import React from "react";
 import style from "./account.module.css";
 const Index = () => {
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    const name = e.target[0].value;
+    const phone = e.target[1].value;
+    const password = e.target[2].value;
+    const address = e.target[3].value;
+    const body = { name, phone, password, address };
+    let data = await fetch(`/api/signup`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+    let resjson = await data.json();
+    console.log(resjson);
+
+    console.log([name, phone, password, address]);
+  };
   return (
     <main>
       <div className={style.signUp}>
-        <h2>Sign Up for a new account </h2>
-        <form action="/" className={style.signupForm}>
+        <h2>Sign Up For A New Account </h2>
+        <form action="/" className={style.signupForm} onSubmit={handleSignUp}>
           <div className={style.nameSignup}>
             <label htmlFor="name">Your Name </label>
             <input type="text" />
