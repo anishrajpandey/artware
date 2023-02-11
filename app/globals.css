@@ -2,6 +2,11 @@
   margin: 0;
   padding: 0;
 }
+html {
+}
+:root {
+  --navbar-height: 50px;
+}
 .orderNowButton {
   background-color: rgb(255, 88, 27);
   color: #fff;

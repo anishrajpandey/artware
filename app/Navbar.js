@@ -1,12 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import styles from "./Navbar.module.css";
 
 const Navbar = () => {
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (
-    <nav>
+    <nav className={styles.navBarMain}>
       <ul>
         <li>
           <Link href="/">Home</Link>

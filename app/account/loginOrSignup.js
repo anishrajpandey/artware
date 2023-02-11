@@ -85,6 +85,7 @@ const loginOrSignup = () => {
                     required
                   />
                 </div>
+                =
                 <div class="forms_field">
                   <input
                     type="password"
