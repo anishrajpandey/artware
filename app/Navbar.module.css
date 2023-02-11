@@ -1,5 +1,5 @@
 .navBarMain {
   min-height: var(--navbar-height);
-  background-color: rgb(255, 150, 2);
+  background-color: var(--clr-primary);
   color: white;
 }

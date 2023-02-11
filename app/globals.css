@@ -6,6 +6,9 @@ html {
 }
 :root {
   --navbar-height: 50px;
+  --clr-primary-dark: #961eff;
+  --clr-primary: #a555ec;
+  --clr-primary-light: #f3ccff;
 }
 .orderNowButton {
   background-color: rgb(255, 88, 27);
