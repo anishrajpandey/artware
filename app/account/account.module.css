@@ -50,7 +50,7 @@
   top: 50%;
   translate: 0 -50%;
   background-color: var(--signup-background);
-  /* background-color: gre; */
+
   border-radius: 12px;
   opacity: 0.6;
   transition: all 100ms linear;
@@ -137,6 +137,10 @@
   transform-origin: bottom center;
   transform: skewY(9.3deg) scaleY(2);
 }
+.button:hover {
+  background-color: black;
+  transition: background-color 300ms cubic-bezier(0.165, 0.84, 0.44, 1) 250ms;
+}
 
 .button:hover span:last-child {
   transform: translateX(-50%) translateY(-100%);
@@ -148,6 +152,10 @@
     flex-direction: column;
   }
   .signUp .signupForm .buttonArea button {
+    width: 100%;
+  }
+  .signUp .signupForm .buttonArea a {
+    display: block;
     width: 100%;
   }
 }

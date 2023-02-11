@@ -1,22 +1,23 @@
 "use client";
+import Link from "next/link";
 import React from "react";
 import style from "./account.module.css";
 const Index = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const name = e.target[0].value;
+    const userName = e.target[0].value;
     const phone = e.target[1].value;
     const password = e.target[2].value;
     const address = e.target[3].value;
-    const body = { name, phone, password, address };
+    const body = { userName, phone, password, address };
+
     let data = await fetch(`/api/signup`, {
       method: "POST",
       body: JSON.stringify(body),
     });
+    console.log(data);
     let resjson = await data.json();
     console.log(resjson);
-
-    console.log([name, phone, password, address]);
   };
   return (
     <main>
@@ -55,10 +56,12 @@ const Index = () => {
               <span class="text">Create Account</span>
               <span>Click to create account</span>
             </button>
-            <button class={style.button} role="button">
-              <span class="text">Have an account?</span>
-              <span>Login</span>
-            </button>
+            <Link href={"/account/login"}>
+              <button class={style.button} id={style.login} role="button">
+                <span class="text">Have an account?</span>
+                <span>Login</span>
+              </button>
+            </Link>
           </div>
         </form>
       </div>
