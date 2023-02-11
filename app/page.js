@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import ContextProvider from "@/context/useContext";
 const Index = () => {
   return (
     <div>

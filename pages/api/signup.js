@@ -1,5 +1,5 @@
 import users from "../../models/userModel";
-import bcrypt, { hash } from "bcryptjs";
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 export default async function handler(req, res) {
   // if (req.body.method !== "POST") return;

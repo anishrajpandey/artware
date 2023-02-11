@@ -1,0 +1,161 @@
+.login {
+  --signup-background: white;
+  width: 100vw;
+  height: calc(100vh - var(--navbar-height));
+  background-color: var(--signup-background);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  overflow-x: hidden;
+}
+.login > h2 {
+  /* width: fit-content; */
+  margin: 22px auto;
+
+  display: block;
+  text-align: center;
+}
+.login .signupForm {
+  width: min(700px, 100vw);
+  /* border: 2px solid black; */
+  height: 100%;
+  margin: 10px auto;
+  display: flex;
+  flex-direction: column;
+}
+.login .signupForm div {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+}
+
+.login .signupForm div :is(input, textarea) {
+  height: 40px;
+  width: 90%;
+  margin: auto;
+  border-radius: 0.3rem;
+  outline: 0;
+  border: 1px solid black;
+  background-color: transparent;
+  padding: 5px 15px;
+  font-size: 1.2rem;
+}
+.login .signupForm div textarea {
+  min-height: 100px;
+  border-radius: 0;
+}
+
+.login .signupForm div label {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  background-color: var(--signup-background);
+
+  border-radius: 12px;
+  opacity: 0.6;
+  transition: all 100ms linear;
+}
+.login .signupForm div:has(input:focus) label {
+  top: 0;
+  translate: 0 0%;
+  background-color: var(--signup-background);
+  opacity: 1;
+}
+
+/* !FOR BUTTON */ /* 2nd button */
+.login .signupForm .buttonArea {
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  gap: 15px;
+  margin: 0 auto;
+}
+
+.button {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #18181a;
+  color: #18181a;
+  display: inline-block;
+  font-size: 15px;
+  line-height: 15px;
+  padding: 18px 18px 17px;
+  text-decoration: none;
+  cursor: pointer;
+  background: #fff;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  /* width: max(20vw, 200px); */
+  margin: 0 auto;
+  flex-grow: 1;
+}
+.button.login {
+  background: var(--clr-primary-dark);
+  color: white;
+  font-weight: bolder;
+}
+/* .button:not(.signup) {
+} */
+
+.button span:first-child {
+  position: relative;
+  transition: color 600ms cubic-bezier(0.48, 0, 0.12, 1);
+  z-index: 10;
+}
+
+.button span:last-child {
+  color: white;
+  display: block;
+  position: absolute;
+  bottom: 0;
+  transition: all 500ms cubic-bezier(0.48, 0, 0.12, 1);
+  z-index: 100;
+  opacity: 0;
+  top: 50%;
+  left: 50%;
+  transform: translateY(225%) translateX(-50%);
+  height: 14px;
+  line-height: 13px;
+}
+
+.button:after {
+  content: "";
+  position: absolute;
+  bottom: -50%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  transform-origin: bottom center;
+  transition: transform 600ms cubic-bezier(0.48, 0, 0.12, 1);
+  transform: skewY(9.3deg) scaleY(0);
+  z-index: 50;
+}
+
+.button:hover:after {
+  transform-origin: bottom center;
+  transform: skewY(9.3deg) scaleY(2);
+}
+.button:hover {
+  background-color: black;
+  transition: background-color 300ms cubic-bezier(0.165, 0.84, 0.44, 1) 250ms;
+}
+
+.button:hover span:last-child {
+  transform: translateX(-50%) translateY(-100%);
+  opacity: 1;
+  transition: all 900ms cubic-bezier(0.48, 0, 0.12, 1);
+}
+@media screen and (width<450px) {
+  .login .signupForm .buttonArea {
+    flex-direction: column;
+  }
+  .login .signupForm .buttonArea button {
+    width: 100%;
+  }
+  .login .signupForm .buttonArea a {
+    display: block;
+    width: 100%;
+  }
+}
