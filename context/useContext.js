@@ -4,12 +4,9 @@ import Context from "./context";
 
 const ContextProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
 
   return (
-    <Context.Provider
-      value={{ isLoggedIn, setIsLoggedIn, showLogin, setShowLogin }}
-    >
+    <Context.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       {children}
     </Context.Provider>
   );

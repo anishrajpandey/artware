@@ -62,6 +62,12 @@
   opacity: 1;
 }
 
+/* todo */
+/* button:not(#login) {
+  background-color: var(--clr-primary-dark);
+  color: white;
+  font-weight: bolder;
+} */
 /* !FOR BUTTON */ /* 2nd button */
 .login .signupForm .buttonArea {
   display: flex;
