@@ -9,6 +9,8 @@ export default async function handler(req, res) {
   const parsedObject = JSON.parse(req.body);
 
   let data = users.find({ phone: parsedObject.phone });
+  if (data) {
+    
   let hashedpassword = users.password;
   let stringpassword = parsedObject.password;
   let isAuthorized = bcrypt.compareSync(stringpassword, hashedpassword);
@@ -21,5 +23,9 @@ export default async function handler(req, res) {
       data: null,
       message: "Unable to authorize you",
     });
+  }
+
+  } else {
+    console.log("NO SUCH USER   ")
   }
 }

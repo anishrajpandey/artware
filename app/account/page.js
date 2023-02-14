@@ -28,7 +28,20 @@ const Index = () => {
     let resjson = await data.json();
     console.log(resjson);
   };
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
+    const phone = e.target[0].value;
+    const password = e.target[2].value;
+    const body = { phone, password };
+    let data = await fetch(`/api/login`, {
+      method: "POST",
+      body: JSON.stringify(body),
+    });
+
+    let resjson = await data.json();
+    console.log(resjson);
+  };
   return (
     <>
       {isLoggedIn ? (
@@ -96,29 +109,18 @@ const Index = () => {
           ) : (
             <div className={loginStyle.login}>
               <h2>Login To Your Account </h2>
-              <form action="/" className={loginStyle.signupForm}>
-                <div className={loginStyle.nameSignup}>
-                  <label htmlFor="name">Your Name </label>
-                  <input type="text" />
-                </div>
-
+              <form
+                action="/"
+                className={loginStyle.signupForm}
+                onSubmit={handleLogin}
+              >
                 <div className={loginStyle.phoneSignup}>
                   <label htmlFor="name">Your Phone Number </label>
                   <input type="number" />
                 </div>
                 <div className={loginStyle.passwordSignup}>
-                  <label htmlFor="name">Set Your Password </label>
+                  <label htmlFor="name"> Your Password </label>
                   <input type="text" />
-                </div>
-                <div className={loginStyle.addressSignup}>
-                  <label htmlFor="name">Enter your address </label>
-                  {/* <input type="text" /> */}
-                  <textarea
-                    name="address"
-                    id="address"
-                    cols="30"
-                    rows="10"
-                  ></textarea>
                 </div>
 
                 {/* <button className={loginStyle.button} type="submit">
@@ -126,7 +128,7 @@ const Index = () => {
           </button> */}
                 <div className={loginStyle.buttonArea}>
                   <button
-                    className={`${loginStyle.button} ${loginStyle.signup}`}
+                    className={`${loginStyle.button} ${loginStyle.login}`}
                     role="button"
                   >
                     <span className="text">Login</span>

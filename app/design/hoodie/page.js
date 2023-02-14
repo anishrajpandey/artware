@@ -1,26 +1,41 @@
 "use client";
 import Image from "next/image";
 import styles from "./Design.module.css";
+import dynamic from "next/dynamic";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
-import BlackHoodie from "./../../../public/assets/hoodies/hoodie-black.png";
-import BlueHoodie from "./../../../public/assets/hoodies/hoodie-blue.png";
-import GrayHoodie from "./../../../public/assets/hoodies/hoodie-gray.png";
-import RedHoodie from "./../../../public/assets/hoodies/hoodie-red.png";
-import WhiteHoodie from "./../../../public/assets/hoodies/hoodie-white.png";
-import YellowHoodie from "./../../../public/assets/hoodies/hoodie-yellow.png";
+// import BlackHoodie from "./../../../public/assets/hoodies/hoodie-black.png";
+// import BlueHoodie from "./../../../public/assets/hoodies/hoodie-blue.png";
+// import GrayHoodie from "./../../../public/assets/hoodies/hoodie-gray.png";
+// import RedHoodie from "./../../../public/assets/hoodies/hoodie-red.png";
+// import WhiteHoodie from "./../../../public/assets/hoodies/hoodie-white.png";
+// import YellowHoodie from "./../../../public/assets/hoodies/hoodie-yellow.png";
 
 const App = () => {
-  const Hoodies = [
-    BlackHoodie,
-    BlueHoodie,
-    GrayHoodie,
-    RedHoodie,
-    WhiteHoodie,
-    YellowHoodie,
+  const hoodiesUrl = [
+    "/assets/hoodies/hoodie-black.png",
+    "/assets/hoodies/hoodie-blue.png",
+    "/assets/hoodies/hoodie-gray.png",
+    "/assets/hoodies/hoodie-red.png",
+    "/assets/hoodies/hoodie-white.png",
+    "/assets/hoodies/hoodie-yellow.png",
   ];
+  // const Hoodies = [
+  //   BlackHoodie,
+  //   BlueHoodie,
+  //   GrayHoodie,
+  //   RedHoodie,
+  //   WhiteHoodie,
+  //   YellowHoodie,
+  // ];
+  const dynamicImport = dynamic(() =>
+    import("./../../../public/assets/hoodies/hoodie-black.png", {
+      loading: () => {},
+    })
+  );
+  console.log(dynamicImport);
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -153,20 +168,22 @@ const App = () => {
         />
         <h3>More Variations</h3>
         <div className={styles.Hoodiesvariation}>
-          {Hoodies.map((Hoodie, index) => {
+          {hoodiesUrl.map((Hoodie, index) => {
             return (
               <div
                 key={index}
                 className={styles.Hoodies}
                 onClick={(e) => {
-                  handleHoodieChange(e, Hoodie.src);
+                  handleHoodieChange(e, Hoodie);
                 }}
               >
                 <Image
                   src={Hoodie}
-                  alt=""
+                  alt="No image available"
+                  loading="lazy"
                   style={{ pointerEvents: "none" }}
                   width={50}
+                  height={50}
                 ></Image>
               </div>
             );

@@ -13,22 +13,28 @@ export default async function handler(req, res) {
   let hashedPassword = bcrypt.hashSync(stringpassword, salt);
   // console.log(hashedPassword);
   const { name, phone, address, password } = parsedObject;
-  parsedObject.password = hashedPassword;
-  let userdata = new users(parsedObject);
-  console.log(userdata);
-  if (userdata) {
+  let previousRecords = await users.findOne({ phone });
+  if (!previousRecords) {
+    parsedObject.password = hashedPassword;
+    let userdata = new users(parsedObject);
+    console.log(userdata);
+    if (userdata) {
+      res.json({
+        successMessage:
+          "Hi, " +
+          userdata.userName +
+          " Your account has been successfully created. You can now login with the credentials.🙂",
+      });
+    }
+    userdata.save((err, user) => {
+      if (err) {
+        res.json({ errorMessage: err });
+      }
+    });
+  } else {
     res.json({
-      successMessage:
-        "Hi, " +
-        userdata.userName +
-        " Your account has been successfully created. You can now login with the credentials.🙂",
+      errorMessage: "The number is already registered",
     });
   }
-  userdata.save((err, user) => {
-    if (err) {
-      res.json({ errorMessage: err });
-    }
-  });
-
   // console.log(name, phone, address, password);
 }

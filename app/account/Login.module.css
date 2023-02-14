@@ -82,7 +82,7 @@
   overflow: hidden;
   border: 1px solid #18181a;
   color: #18181a;
-  display: inline-block;
+  display: block;
   font-size: 15px;
   line-height: 15px;
   padding: 18px 18px 17px;
@@ -93,16 +93,20 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   /* width: max(20vw, 200px); */
-  margin: 0 auto;
-  flex-grow: 1;
+  /* margin: 0 auto; */
+  /* flex-grow: 1; */
+  justify-content: center;
 }
 .button.login {
   background: var(--clr-primary-dark);
   color: white;
   font-weight: bolder;
+  height: 50px;
+  flex: 0.7;
 }
-/* .button:not(.signup) {
-} */
+.button:not(.signup) {
+  flex: 0.3;
+}
 
 .button span:first-child {
   position: relative;
