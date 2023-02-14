@@ -6,13 +6,18 @@ import { useContext, useState } from "react";
 import styles from "./Dashboard.module.css";
 import signupStyle from "./Signup.module.css";
 import loginStyle from "./Login.module.css";
-import { set } from "mongoose";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Index = () => {
   const [showLogin, setShowLogin] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   let { isLoggedIn } = useContext(Context);
   console.log("🤔 > Index > isLoggedIn", isLoggedIn);
 
   const handleSignUp = async (e) => {
+    setIsLoading(true);
+
     e.preventDefault();
     const userName = e.target[0].value;
     const phone = e.target[1].value;
@@ -26,13 +31,17 @@ const Index = () => {
     });
 
     let resjson = await data.json();
-    console.log(resjson);
+    setIsLoading(false);
+
+    //show toast
+    notify(resjson.message, resjson.success);
   };
   const handleLogin = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
 
     const phone = e.target[0].value;
-    const password = e.target[2].value;
+    const password = e.target[1].value;
     const body = { phone, password };
     let data = await fetch(`/api/login`, {
       method: "POST",
@@ -40,14 +49,39 @@ const Index = () => {
     });
 
     let resjson = await data.json();
-    console.log(resjson);
+
+    setIsLoading(false);
+
+    notify(resjson.message, resjson.authorized);
+  };
+  const notify = (message, isAuthorized) => {
+    const options = {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    };
+    isAuthorized
+      ? toast.success(message, options)
+      : toast.error(message, options);
   };
   return (
     <>
       {isLoggedIn ? (
         <main className={styles.dashboard}>login dashboard</main>
       ) : (
-        <main>
+        <main
+          className="loginorsignup"
+          style={{
+            opacity: isLoading ? "0.5" : "1",
+            background: isLoading ? "royalblue" : "transparent",
+            pointerEvents: isLoading ? "none" : "all",
+          }}
+        >
           {!showLogin ? (
             <div className={signupStyle.signUp}>
               <h2>Sign Up For A New Account </h2>
@@ -151,6 +185,18 @@ const Index = () => {
           )}
 
           {/* login page */}
+          <ToastContainer
+            position="bottom-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
         </main>
       )}
     </>

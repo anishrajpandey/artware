@@ -20,7 +20,8 @@ export default async function handler(req, res) {
     console.log(userdata);
     if (userdata) {
       res.json({
-        successMessage:
+        success: true,
+        message:
           "Hi, " +
           userdata.userName +
           " Your account has been successfully created. You can now login with the credentials.🙂",
@@ -28,12 +29,16 @@ export default async function handler(req, res) {
     }
     userdata.save((err, user) => {
       if (err) {
-        res.json({ errorMessage: err });
+        res.json({
+          success: false,
+          message: err,
+        });
       }
     });
   } else {
     res.json({
-      errorMessage: "The number is already registered",
+      success: false,
+      message: "The number is already registered",
     });
   }
   // console.log(name, phone, address, password);
