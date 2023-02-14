@@ -12,8 +12,9 @@ import "react-toastify/dist/ReactToastify.css";
 const Index = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  let { isLoggedIn } = useContext(Context);
-  console.log("🤔 > Index > isLoggedIn", isLoggedIn);
+  let { isLoggedIn, setIsLoggedIn, setUserData, userData } =
+    useContext(Context);
+  console.log(userData);
 
   const handleSignUp = async (e) => {
     setIsLoading(true);
@@ -51,7 +52,10 @@ const Index = () => {
     let resjson = await data.json();
 
     setIsLoading(false);
-
+    if (resjson.authorized) {
+      setIsLoggedIn(true);
+      setUserData(resjson.data);
+    }
     notify(resjson.message, resjson.authorized);
   };
   const notify = (message, isAuthorized) => {
@@ -72,7 +76,9 @@ const Index = () => {
   return (
     <>
       {isLoggedIn ? (
-        <main className={styles.dashboard}>login dashboard</main>
+        <main className={styles.dashboard}><h2>YOUR PROFILE</h2>
+          {JSON.stringify(userData) }
+        </main>
       ) : (
         <main
           className="loginorsignup"
