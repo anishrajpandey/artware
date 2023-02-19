@@ -31,9 +31,11 @@ const DragAndDrop = ({ children }) => {
     };
   }, [isDragging, initialMousePosition]);
   useEffect(() => {
-    const onPointerUp = () => setIsDragging(false);
+    const onPointerUp = () => {
+      setIsDragging(false);
+    };
     window.addEventListener("pointerup", onPointerUp);
-    window.addEventListener("touchcancel", onPointerUp);
+    window.addEventListener("touchend", onPointerUp);
     return () => {
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("touchup", onPointerUp);

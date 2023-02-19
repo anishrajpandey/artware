@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+
 import React from "react";
 import Context from "@/context/context";
 import { useContext, useState } from "react";
@@ -76,8 +76,9 @@ const Index = () => {
   return (
     <>
       {isLoggedIn ? (
-        <main className={styles.dashboard}><h2>YOUR PROFILE</h2>
-          {JSON.stringify(userData) }
+        <main className={styles.dashboard}>
+          <h2>YOUR PROFILE</h2>
+          {JSON.stringify(userData)}
         </main>
       ) : (
         <main

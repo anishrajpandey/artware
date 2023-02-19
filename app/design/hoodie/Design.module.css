@@ -12,6 +12,11 @@ div.main div.left {
   height: 100vh;
   flex: 0.2;
   border: 2px solid rgb(0, 51, 108);
+  display: flex;
+  flex-direction: column;
+}
+div.main div.left h4 {
+  text-align: center;
 }
 div.main div.right {
   height: 100vh;

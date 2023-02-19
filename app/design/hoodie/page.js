@@ -1,17 +1,11 @@
 "use client";
 import Image from "next/image";
 import styles from "./Design.module.css";
-import dynamic from "next/dynamic";
+
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
-// import BlackHoodie from "./../../../public/assets/hoodies/hoodie-black.png";
-// import BlueHoodie from "./../../../public/assets/hoodies/hoodie-blue.png";
-// import GrayHoodie from "./../../../public/assets/hoodies/hoodie-gray.png";
-// import RedHoodie from "./../../../public/assets/hoodies/hoodie-red.png";
-// import WhiteHoodie from "./../../../public/assets/hoodies/hoodie-white.png";
-// import YellowHoodie from "./../../../public/assets/hoodies/hoodie-yellow.png";
 
 const App = () => {
   const hoodiesUrl = [
@@ -22,20 +16,7 @@ const App = () => {
     "/assets/hoodies/hoodie-white.png",
     "/assets/hoodies/hoodie-yellow.png",
   ];
-  // const Hoodies = [
-  //   BlackHoodie,
-  //   BlueHoodie,
-  //   GrayHoodie,
-  //   RedHoodie,
-  //   WhiteHoodie,
-  //   YellowHoodie,
-  // ];
-  const dynamicImport = dynamic(() =>
-    import("./../../../public/assets/hoodies/hoodie-black.png", {
-      loading: () => {},
-    })
-  );
-  console.log(dynamicImport);
+
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -69,14 +50,16 @@ const App = () => {
   };
 
   function toggleImageFocus(e, index) {
+    e.preventDefault();
+    setIsImageFocused(true);
+
     setFocusedImageIndex(index);
-    console.log(index);
 
     [...e.target.parentElement.parentElement.children].forEach((element) => {
       element.children[0].children[0].style.outline = "none";
     });
 
-    e.target.children[0].style.outline = "2px dotted black";
+    e.target.children[0].style.outline = "8px solid rgba(199,199,199,0.4)";
     e.target.style.zIndex = +e.target.style.zIndex + 1;
 
     // console.log(e.target.style.zIndex);
@@ -84,7 +67,6 @@ const App = () => {
     setTimeout(() => {
       e.target.children[0].style.outline = "none";
     }, 3000);
-    setIsImageFocused(true);
   }
   function resizeImageByWidth(e) {
     setIsImageFocused(!isImageFocused);
@@ -138,107 +120,128 @@ const App = () => {
     }
   };
   return (
-    <div className={styles.main} style={{ opacity: isLoading ? "0.1" : "1" }}>
-      <div className={styles.left}>
-        <div className={styles.addImage}>
-          Select Image to upload:{" "}
-          <input
-            type="file"
-            name="image"
-            id="add-image"
-            onChange={handleImageUpload}
-          />
-        </div>
-        <div className={styles.addText}>Add Text</div>
+    <>
+      <div
+        className={styles.main}
+        style={{
+          opacity: isLoading ? "0.1" : "1",
+          touchAction: isImageFocused ? "none" : "auto",
+        }}
+      >
+        <div className={styles.left}>
+          <div className={styles.addText}>
+            <h4>Customize Your Design</h4>
+          </div>
+          <div className={styles.addImage}>
+            Select Image to upload:{" "}
+            <input
+              type="file"
+              name="image"
+              id="add-image"
+              onChange={handleImageUpload}
+            />
+          </div>
 
-        <br />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByWidth}
-        />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByHeight}
-        />
-        <h3>More Variations</h3>
-        <div className={styles.Hoodiesvariation}>
-          {hoodiesUrl.map((Hoodie, index) => {
-            return (
-              <div
-                key={index}
-                className={styles.Hoodies}
-                onClick={(e) => {
-                  handleHoodieChange(e, Hoodie);
-                }}
-              >
-                <Image
-                  src={Hoodie}
-                  alt="No image available"
-                  loading="lazy"
-                  style={{ pointerEvents: "none" }}
-                  width={50}
-                  height={50}
-                ></Image>
-              </div>
-            );
-          })}
-        </div>
-        <button onClick={handleOrder} className={"orderNowButton"}>
-          Order Now
-        </button>
-      </div>
-      <div className={styles.right}>
-        <div className={styles.editArea}>
-          <TransformWrapper disabled={isImageFocused}>
-            <TransformComponent>
-              <div
-                className={styles.backgroundItem}
-                ref={canvas}
-                onClick={(e) => {
-                  setIsImageFocused(!e.target.className.includes("background"));
-                }}
-              >
-                <div className={styles.printArea} ref={printArea}>
-                  {imgSrc &&
-                    imgSrc.map((source, index) => {
-                      // console.log(source);
-                      return (
-                        <DragAndDrop key={index}>
-                          <div
-                            onPointerDown={(e) => {
-                              toggleImageFocus(e, index);
-                            }}
-                            onTouchEnd={(e) => {
-                              toggleImageFocus(e, index);
-                            }}
-                            className={styles.imageContainer}
-                          >
-                            <Image
-                              onClick={(e) => {
-                                console.log(e);
-                              }}
-                              src={source.src}
-                              width={200 * 0.02 * source.width || 200}
-                              height={200 * 0.02 * source.height || 200}
-                              alt={"could not load image"}
-                            ></Image>{" "}
-                          </div>
-                        </DragAndDrop>
-                      );
-                    })}
+          <br />
+          <input
+            type="range"
+            className={styles.rangeForSize}
+            min={0}
+            max={100}
+            onChange={resizeImageByWidth}
+          />
+          <input
+            type="range"
+            className={styles.rangeForSize}
+            min={0}
+            max={100}
+            onChange={resizeImageByHeight}
+          />
+          <h3>More Variations</h3>
+          <div className={styles.Hoodiesvariation}>
+            {hoodiesUrl.map((Hoodie, index) => {
+              return (
+                <div
+                  key={index}
+                  className={styles.Hoodies}
+                  onClick={(e) => {
+                    handleHoodieChange(e, Hoodie);
+                  }}
+                >
+                  <Image
+                    src={Hoodie}
+                    alt="No image available"
+                    loading="lazy"
+                    style={{ pointerEvents: "none" }}
+                    width={50}
+                    height={50}
+                  ></Image>
                 </div>
-              </div>
-            </TransformComponent>
-          </TransformWrapper>
+              );
+            })}
+          </div>
+          <button onClick={handleOrder} className={"orderNowButton"}>
+            Order Now
+          </button>
+        </div>
+        <div className={styles.right}>
+          <div className={styles.editArea}>
+            <TransformWrapper disabled={isImageFocused}>
+              <TransformComponent>
+                <div
+                  className={styles.backgroundItem}
+                  ref={canvas}
+                  onClick={(e) => {
+                    setIsImageFocused(
+                      !e.target.className.includes("background")
+                    );
+                  }}
+                >
+                  <div className={styles.printArea} ref={printArea}>
+                    {imgSrc &&
+                      imgSrc.map((source, index) => {
+                        // console.log(source);
+                        return (
+                          <DragAndDrop key={index}>
+                            <div
+                              onPointerDown={(e) => {
+                                toggleImageFocus(e, index);
+                                setIsImageFocused(true);
+                                console.log("clicked");
+                                // canvas.current.parentElement.parentElement.style.overflow =
+                                //   "hidden";
+                              }}
+                              onPointerMove={(e) => {
+                                setIsImageFocused(true);
+                              }}
+                              onTouchEnd={(e) => {
+                                // e.target.click();
+                                setIsImageFocused(false);
+                                console.log("done");
+                              }}
+                              className={styles.imageContainer}
+                            >
+                              <Image
+                                onClick={(e) => {
+                                  console.log(e);
+                                }}
+                                src={source.src}
+                                width={200 * 0.02 * source.width || 200}
+                                height={200 * 0.02 * source.height || 200}
+                                alt={"could not load image"}
+                              ></Image>{" "}
+                            </div>
+                          </DragAndDrop>
+                        );
+                      })}
+                  </div>
+                </div>
+              </TransformComponent>
+            </TransformWrapper>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
