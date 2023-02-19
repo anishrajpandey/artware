@@ -6,11 +6,6 @@ import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
 import RedMug from "./../../../public/assets/mugs/mug-red.png";
-import GreenMug from "./../../../public/assets/mugs/mug-green.png";
-import BlueMug from "./../../../public/assets/mugs/mug-blue.png";
-import YellowMug from "./../../../public/assets/mugs/mug-yellow.png";
-import BlackMug from "./../../../public/assets/mugs/mug-black.png";
-import WhiteMug from "./../../../public/assets/mugs/mug-white.png";
 const App = () => {
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
