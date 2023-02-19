@@ -13,6 +13,18 @@ div.main div.left {
   flex: 0.4;
   border: 2px solid rgb(255, 138, 115);
   max-width: min(100vw, 300px);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--clr-primary-light);
+  padding: 5px;
+  overflow-y: scroll;
+  height: 100vh;
+  padding-bottom: 20px;
+}
+
+div.main div.right {
+  height: 100vh;
+  flex: 0.6;
 }
 div.main div.left .Mugsvariation {
   display: flex;
@@ -32,9 +44,67 @@ div.main div.left .Mugsvariation div {
 div.main div.left .Mugsvariation div:hover {
   background-color: rgb(250, 207, 207);
 }
-div.main div.right {
-  height: 100vh;
-  flex: 0.6;
+div.main div.left h2 {
+  text-align: center;
+  margin-block: 20px;
+}
+div.main div.left .addImage {
+  font-size: 1rem;
+  font-weight: bold;
+  background-color: var(--clr-primary-light);
+}
+div.main div.left > .resizeOptions {
+  padding: 12px;
+  width: 100%;
+  background-color: var(--clr-primary-light, white);
+}
+div.main div.left .resizeOptions input {
+  width: 100%;
+  accent-color: var(--clr-primary-dark);
+}
+div.main div.left .addImage input {
+  width: 100%;
+  height: 80px;
+  background-color: rgb(212, 212, 212);
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+div.main div.left .addImage input::before {
+  content: "Or Drag Your Image Here";
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.12rem;
+}
+div.main div.left .addImage input[type="file"]::file-selector-button {
+  border: 2px solid #6c5ce7;
+  padding: 0.2em 0.4em;
+  border-radius: 0.2em;
+  background-color: var(--clr-primary);
+  transition: 100ms;
+  /* margin: 12px 32px; */
+  width: 100%;
+  font-size: 1.05rem;
+}
+
+div.main div.left .addImage input[type="file"]::file-selector-button:hover {
+  background-color: var(--clr-primary-light);
+  border: 2px solid black;
+}
+
+div.main div.left .details h4 {
+  display: inline-block;
+}
+div.main div.left .details textarea {
+  width: 100%;
+  font-size: 1.06rem;
+  padding: 5px;
+  resize: none;
+}
+div.main div.left .details + button.orderNowButton {
+  height: 50px;
 }
 .right .editArea {
   display: flex;

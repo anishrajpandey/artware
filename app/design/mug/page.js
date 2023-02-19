@@ -11,7 +11,6 @@ import BlueMug from "./../../../public/assets/mugs/mug-blue.png";
 import YellowMug from "./../../../public/assets/mugs/mug-yellow.png";
 import BlackMug from "./../../../public/assets/mugs/mug-black.png";
 import WhiteMug from "./../../../public/assets/mugs/mug-white.png";
-import MugOrthographic from "../../../public/assets/mugs/two-way-mug.svg";
 const App = () => {
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
@@ -19,7 +18,15 @@ const App = () => {
   const [focusedImageIndex, setFocusedImageIndex] = useState();
   let canvas = useRef(),
     printArea = useRef();
-  const Mugs = [RedMug, GreenMug, BlueMug, YellowMug, WhiteMug, BlackMug];
+  const Mugs = [
+    "/assets/mugs/mug-red.png",
+    "/assets/mugs/mug-green.png",
+    "/assets/mugs/mug-blue.png",
+    "/assets/mugs/mug-yellow.png",
+    "/assets/mugs/mug-black.png",
+    "/assets/mugs/mug-white.png",
+    "/assets/mugs/two-way-mug.svg",
+  ];
   async function uploadToCloudinary(file) {
     const formData = new FormData();
     formData.append("file", file);
@@ -110,24 +117,53 @@ const App = () => {
     setIsLoading(false);
   }
   const handleMugChange = async (e, src) => {
-    const isChecked = e.target.checked;
-
-    if (isChecked) {
-      canvas.current.style.backgroundImage = `url(${MugOrthographic.src})`;
-    } else {
-      canvas.current.style.backgroundImage = `url(${
-        Mugs[Math.floor(Math.random() * Mugs.length)].src
-      })`;
-    }
     if (src) {
       canvas.current.style.backgroundImage = `url(${src})`;
     }
   };
   return (
-    <div className={styles.main} style={{ opacity: isLoading ? "0.1" : "1" }}>
+    <div
+      className={styles.main}
+      style={{
+        opacity: isLoading ? "0.1" : "1",
+        touchAction: isImageFocused ? "none" : "auto",
+      }}
+    >
       <div className={styles.left}>
+        <div className={styles.addText}>
+          <h2>Customize Your Design</h2>
+        </div>
+        <div
+          className={styles.resizeOptions}
+          style={{ display: imgSrc[0] ? "block" : "none" }}
+        >
+          <h4>Resize Your Image</h4>
+          <label htmlFor="width">
+            Width:
+            <input
+              type="range"
+              className={styles.rangeForSize}
+              min={0}
+              max={100}
+              onChange={resizeImageByWidth}
+              id="width"
+            />
+          </label>
+
+          <label htmlFor="height">
+            Height:
+            <input
+              type="range"
+              className={styles.rangeForSize}
+              min={0}
+              max={100}
+              onChange={resizeImageByHeight}
+              id="height"
+            />
+          </label>
+        </div>
         <div className={styles.addImage}>
-          Select Image to upload:{" "}
+          Add Your Image
           <input
             type="file"
             name="image"
@@ -135,25 +171,6 @@ const App = () => {
             onChange={handleImageUpload}
           />
         </div>
-        <div className={styles.radio}>
-          <input type={"checkbox"} id="checkbox" onChange={handleMugChange} />
-          <label htmlFor="checkbox">Include Both sides</label>
-        </div>
-        <br />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByWidth}
-        />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByHeight}
-        />
         <h3>More Variations</h3>
         <div className={styles.Mugsvariation}>
           {Mugs.map((mug, index) => {
@@ -162,7 +179,7 @@ const App = () => {
                 key={index}
                 className={styles.mugs}
                 onClick={(e) => {
-                  handleMugChange(e, mug.src);
+                  handleMugChange(e, mug);
                 }}
               >
                 <Image
@@ -170,14 +187,31 @@ const App = () => {
                   alt=""
                   style={{ pointerEvents: "none" }}
                   width={50}
+                  height={50}
                 ></Image>
               </div>
             );
           })}
         </div>
-        <button onClick={handleOrder} className={"orderNowButton"}>
-          Order Now
-        </button>
+        <div className={styles.details}>
+          <h4>Anything More?</h4>
+          <span>(Optional)</span>
+          <textarea
+            name="details"
+            id="details"
+            cols="30"
+            rows="10"
+            placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
+          ></textarea>
+        </div>
+        <div className={styles.buttonWrapper}>
+          <button
+            onClick={handleOrder}
+            className={`orderNowButton ${styles.orderNowButton}`}
+          >
+            Order Now
+          </button>
+        </div>
       </div>
       <div className={styles.right}>
         <div className={styles.editArea}>

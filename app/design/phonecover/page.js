@@ -10,7 +10,11 @@ import WhiteCover from "./../../../public/assets/phonecovers/pc-white.png";
 import TransparentCover from "./../../../public/assets/phonecovers/pc1-transparent.png";
 
 const PhoneCoverDesign = () => {
-  const Covers = [BlackCover, WhiteCover, TransparentCover];
+  const Covers = [
+    "/assets/phonecovers/pc-black.png",
+    "/assets/phonecovers/pc-white.png",
+    "/assets/phonecovers/pc1-transparent.png",
+  ];
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,10 +125,48 @@ const PhoneCoverDesign = () => {
     }
   };
   return (
-    <div className={styles.main} style={{ opacity: isLoading ? "0.1" : "1" }}>
+    <div
+      className={styles.main}
+      style={{
+        opacity: isLoading ? "0.1" : "1",
+        touchAction: isImageFocused ? "none" : "auto",
+      }}
+    >
       <div className={styles.left}>
+        <div className={styles.addText}>
+          <h2>Customize Your Design</h2>
+        </div>
+        <div
+          className={styles.resizeOptions}
+          style={{ display: imgSrc[0] ? "block" : "none" }}
+        >
+          <h4>Resize Your Image</h4>
+          <label htmlFor="width">
+            Width:
+            <input
+              type="range"
+              className={styles.rangeForSize}
+              min={0}
+              max={100}
+              onChange={resizeImageByWidth}
+              id="width"
+            />
+          </label>
+
+          <label htmlFor="height">
+            Height:
+            <input
+              type="range"
+              className={styles.rangeForSize}
+              min={0}
+              max={100}
+              onChange={resizeImageByHeight}
+              id="height"
+            />
+          </label>
+        </div>
         <div className={styles.addImage}>
-          Select Image to upload:{" "}
+          Add Your Image
           <input
             type="file"
             name="image"
@@ -132,22 +174,6 @@ const PhoneCoverDesign = () => {
             onChange={handleImageUpload}
           />
         </div>
-        <div className={styles.addText}>Add Text</div>
-        <br />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByWidth}
-        />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByHeight}
-        />
         <h3>More Variations</h3>
         <div className={styles.Coversvariation}>
           {Covers.map((Cover, index) => {
@@ -156,7 +182,7 @@ const PhoneCoverDesign = () => {
                 key={index}
                 className={styles.Covers}
                 onClick={(e) => {
-                  handleCoverChange(e, Cover.src);
+                  handleCoverChange(e, Cover);
                 }}
               >
                 <Image
@@ -164,6 +190,7 @@ const PhoneCoverDesign = () => {
                   alt=""
                   style={{ pointerEvents: "none" }}
                   width={50}
+                  height={100}
                 ></Image>
               </div>
             );
@@ -176,9 +203,25 @@ const PhoneCoverDesign = () => {
           id="colorinput"
           onChange={handleCoverChange}
         />
-        <button onClick={handleOrder} className={"orderNowButton"}>
-          Order Now
-        </button>
+        <div className={styles.details}>
+          <h4>Anything More?</h4>
+          <span>(Optional)</span>
+          <textarea
+            name="details"
+            id="details"
+            cols="30"
+            rows="10"
+            placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
+          ></textarea>
+        </div>
+        <div className={styles.buttonWrapper}>
+          <button
+            onClick={handleOrder}
+            className={`orderNowButton ${styles.orderNowButton}`}
+          >
+            Order Now
+          </button>
+        </div>
       </div>
       <div className={styles.right}>
         <div className={styles.editArea}>

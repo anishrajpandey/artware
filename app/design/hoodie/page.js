@@ -59,7 +59,7 @@ const App = () => {
       element.children[0].children[0].style.outline = "none";
     });
 
-    e.target.children[0].style.outline = "8px solid rgba(199,199,199,0.4)";
+    e.target.children[0].style.outline = "3px dashed rgba(199,199,199,0.4)";
     e.target.style.zIndex = +e.target.style.zIndex + 1;
 
     // console.log(e.target.style.zIndex);
@@ -130,10 +130,39 @@ const App = () => {
       >
         <div className={styles.left}>
           <div className={styles.addText}>
-            <h4>Customize Your Design</h4>
+            <h2>Customize Your Design</h2>
+          </div>
+          <div
+            className={styles.resizeOptions}
+            style={{ display: imgSrc[0] ? "block" : "none" }}
+          >
+            <h4>Resize Your Image</h4>
+            <label htmlFor="width">
+              Width:
+              <input
+                type="range"
+                className={styles.rangeForSize}
+                min={0}
+                max={100}
+                onChange={resizeImageByWidth}
+                id="width"
+              />
+            </label>
+
+            <label htmlFor="height">
+              Height:
+              <input
+                type="range"
+                className={styles.rangeForSize}
+                min={0}
+                max={100}
+                onChange={resizeImageByHeight}
+                id="height"
+              />
+            </label>
           </div>
           <div className={styles.addImage}>
-            Select Image to upload:{" "}
+            Add Your Image
             <input
               type="file"
               name="image"
@@ -142,21 +171,6 @@ const App = () => {
             />
           </div>
 
-          <br />
-          <input
-            type="range"
-            className={styles.rangeForSize}
-            min={0}
-            max={100}
-            onChange={resizeImageByWidth}
-          />
-          <input
-            type="range"
-            className={styles.rangeForSize}
-            min={0}
-            max={100}
-            onChange={resizeImageByHeight}
-          />
           <h3>More Variations</h3>
           <div className={styles.Hoodiesvariation}>
             {hoodiesUrl.map((Hoodie, index) => {
@@ -180,9 +194,25 @@ const App = () => {
               );
             })}
           </div>
-          <button onClick={handleOrder} className={"orderNowButton"}>
-            Order Now
-          </button>
+          <div className={styles.details}>
+            <h4>Anything More?</h4>
+            <span>(Optional)</span>
+            <textarea
+              name="details"
+              id="details"
+              cols="30"
+              rows="10"
+              placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
+            ></textarea>
+          </div>
+          <div className={styles.buttonWrapper}>
+            <button
+              onClick={handleOrder}
+              className={`orderNowButton ${styles.orderNowButton}`}
+            >
+              Order Now
+            </button>
+          </div>
         </div>
         <div className={styles.right}>
           <div className={styles.editArea}>
@@ -207,9 +237,6 @@ const App = () => {
                               onPointerDown={(e) => {
                                 toggleImageFocus(e, index);
                                 setIsImageFocused(true);
-                                console.log("clicked");
-                                // canvas.current.parentElement.parentElement.style.overflow =
-                                //   "hidden";
                               }}
                               onPointerMove={(e) => {
                                 setIsImageFocused(true);

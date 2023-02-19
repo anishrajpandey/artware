@@ -5,10 +5,6 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
-import Cake1 from "./../../../public/assets/cakes/cake1.jpg";
-import Cake2 from "./../../../public/assets/cakes/cake2.jpg";
-import Cake3 from "./../../../public/assets/cakes/cake3.png";
-import SquareCake from "./../../../public/assets/cakes/cake-square.png";
 
 const App = () => {
   const [imgSrc, setImgSrc] = useState([]);
@@ -17,7 +13,12 @@ const App = () => {
   const [focusedImageIndex, setFocusedImageIndex] = useState();
   let canvas = useRef(),
     printArea = useRef();
-  const Cakes = [Cake1, Cake2, Cake3, SquareCake];
+  const Cakes = [
+    "/assets/cakes/cake1.jpg",
+    "/assets/cakes/cake2.jpg",
+    "/assets/cakes/cake3.png",
+    "/assets/cakes/cake-square.png",
+  ];
   async function uploadToCloudinary(file) {
     const formData = new FormData();
     formData.append("file", file);
@@ -108,22 +109,61 @@ const App = () => {
     setIsLoading(false);
   }
   const handleCakeChange = async (e, src, index) => {
-    if (index !== 3) {
-      printArea.current.children[0].children[0].children[0].style.borderRadius =
-        "50%";
-    } else {
-      printArea.current.children[0].children[0].children[0].style.borderRadius =
-        "0%";
-    }
     if (src) {
       canvas.current.style.backgroundImage = `url(${src})`;
     }
+    if (printArea.current.children[0]?.children[0]?.children[0])
+      if (index !== 3) {
+        printArea.current.children[0].children[0].children[0].style.borderRadius =
+          "50%";
+      } else {
+        printArea.current.children[0].children[0].children[0].style.borderRadius =
+          "0%";
+      }
   };
   return (
-    <div className={styles.main} style={{ opacity: isLoading ? "0.1" : "1" }}>
+    <div
+      className={styles.main}
+      style={{
+        opacity: isLoading ? "0.1" : "1",
+        touchAction: isImageFocused ? "none" : "auto",
+      }}
+    >
       <div className={styles.left}>
+        <div className={styles.addText}>
+          <h2>Customize Your Design</h2>
+        </div>
+        <div
+          className={styles.resizeOptions}
+          style={{ display: imgSrc[0] ? "block" : "none" }}
+        >
+          <h4>Resize Your Image</h4>
+          <label htmlFor="width">
+            Width:
+            <input
+              type="range"
+              className={styles.rangeForSize}
+              min={0}
+              max={100}
+              onChange={resizeImageByWidth}
+              id="width"
+            />
+          </label>
+
+          <label htmlFor="height">
+            Height:
+            <input
+              type="range"
+              className={styles.rangeForSize}
+              min={0}
+              max={100}
+              onChange={resizeImageByHeight}
+              id="height"
+            />
+          </label>
+        </div>
         <div className={styles.addImage}>
-          Select Image to upload:{" "}
+          Add Your Image
           <input
             type="file"
             name="image"
@@ -131,21 +171,7 @@ const App = () => {
             onChange={handleImageUpload}
           />
         </div>
-        <br />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByWidth}
-        />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByHeight}
-        />
+
         <h3>More Variations</h3>
         <div className={styles.Mugsvariation}>
           {Cakes.map((cake, index) => {
@@ -154,7 +180,7 @@ const App = () => {
                 key={index}
                 className={styles.cakes}
                 onClick={(e) => {
-                  handleCakeChange(e, cake.src, index);
+                  handleCakeChange(e, cake, index);
                 }}
               >
                 <Image
@@ -162,14 +188,31 @@ const App = () => {
                   alt=""
                   style={{ pointerEvents: "none" }}
                   width={50}
+                  height={50}
                 ></Image>
               </div>
             );
           })}
         </div>
-        <button onClick={handleOrder} className={"orderNowButton"}>
-          Order Now
-        </button>
+        <div className={styles.details}>
+          <h4>Anything More?</h4>
+          <span>(Optional)</span>
+          <textarea
+            name="details"
+            id="details"
+            cols="30"
+            rows="10"
+            placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
+          ></textarea>
+        </div>
+        <div className={styles.buttonWrapper}>
+          <button
+            onClick={handleOrder}
+            className={`orderNowButton ${styles.orderNowButton}`}
+          >
+            Order Now
+          </button>
+        </div>
       </div>
       <div className={styles.right}>
         <div className={styles.editArea}>

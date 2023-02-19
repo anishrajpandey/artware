@@ -5,25 +5,17 @@ import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
 import { useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
-import BlackTshirt from "./../../../public/assets/tshirts/tshirt-black.png";
-import PinkTshirt from "./../../../public/assets/tshirts/t-pink.png";
-import WhiteTshirt from "./../../../public/assets/tshirts/t-white.png";
-import BlueTshirt from "./../../../public/assets/tshirts/t-blue.png";
-import RedTshirt from "./../../../public/assets/tshirts/t-red.png";
-import YellowTshirt from "./../../../public/assets/tshirts/t-yellow.png";
-import BlackSweatShirt from "./../../../public/assets/tshirts/s-black.png";
-import OrangeweatShirt from "./../../../public/assets/tshirts/s-orange.png";
 
 const App = () => {
   const Tshirts = [
-    BlackTshirt,
-    PinkTshirt,
-    WhiteTshirt,
-    BlueTshirt,
-    RedTshirt,
-    YellowTshirt,
-    BlackSweatShirt,
-    OrangeweatShirt,
+    "/assets/tshirts/tshirt-black.png",
+    "/assets/tshirts/t-pink.png",
+    "/assets/tshirts/t-white.png",
+    "/assets/tshirts/t-blue.png",
+    "/assets/tshirts/t-red.png",
+    "/assets/tshirts/t-yellow.png",
+    "/assets/tshirts/s-black.png",
+    "/assets/tshirts/s-orange.png",
   ];
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
@@ -65,7 +57,7 @@ const App = () => {
       element.children[0].children[0].style.outline = "none";
     });
 
-    e.target.children[0].style.outline = "2px dotted black";
+    e.target.children[0].style.outline = "3px dashed rgba(199,199,199,0.4)";
     e.target.style.zIndex = +e.target.style.zIndex + 1;
 
     // console.log(e.target.style.zIndex);
@@ -127,10 +119,48 @@ const App = () => {
     }
   };
   return (
-    <div className={styles.main} style={{ opacity: isLoading ? "0.1" : "1" }}>
+    <div
+      className={styles.main}
+      style={{
+        opacity: isLoading ? "0.1" : "1",
+        touchAction: isImageFocused ? "none" : "auto",
+      }}
+    >
       <div className={styles.left}>
+        <div className={styles.addText}>
+          <h2>Customize Your Design</h2>
+        </div>
+        <div
+          className={styles.resizeOptions}
+          style={{ display: imgSrc[0] ? "block" : "none" }}
+        >
+          <h4>Resize Your Image</h4>
+          <label htmlFor="width">
+            Width:
+            <input
+              type="range"
+              className={styles.rangeForSize}
+              min={0}
+              max={100}
+              onChange={resizeImageByWidth}
+              id="width"
+            />
+          </label>
+
+          <label htmlFor="height">
+            Height:
+            <input
+              type="range"
+              className={styles.rangeForSize}
+              min={0}
+              max={100}
+              onChange={resizeImageByHeight}
+              id="height"
+            />
+          </label>
+        </div>
         <div className={styles.addImage}>
-          Select Image to upload:{" "}
+          Add Your Image
           <input
             type="file"
             name="image"
@@ -138,26 +168,6 @@ const App = () => {
             onChange={handleImageUpload}
           />
         </div>
-        <div className={styles.addText}>Add Text</div>
-        <button onClick={handleOrder} className={"orderNowButton"}>
-          Order Now
-        </button>
-
-        <br />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByWidth}
-        />
-        <input
-          type="range"
-          className={styles.rangeForSize}
-          min={0}
-          max={100}
-          onChange={resizeImageByHeight}
-        />
         <h3>More Variations</h3>
         <div className={styles.Tshirtsvariation}>
           {Tshirts.map((Tshirt, index) => {
@@ -166,18 +176,38 @@ const App = () => {
                 key={index}
                 className={styles.Tshirts}
                 onClick={(e) => {
-                  handleTshirtChange(e, Tshirt.src);
+                  handleTshirtChange(e, Tshirt);
                 }}
               >
                 <Image
                   src={Tshirt}
-                  alt=""
+                  alt="error loading image"
                   style={{ pointerEvents: "none" }}
                   width={50}
+                  height={50}
                 ></Image>
               </div>
             );
           })}
+        </div>
+        <div className={styles.details}>
+          <h4>Anything More?</h4>
+          <span>(Optional)</span>
+          <textarea
+            name="details"
+            id="details"
+            cols="30"
+            rows="10"
+            placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
+          ></textarea>
+        </div>
+        <div className={styles.buttonWrapper}>
+          <button
+            onClick={handleOrder}
+            className={`orderNowButton ${styles.orderNowButton}`}
+          >
+            Order Now
+          </button>
         </div>
       </div>
       <div className={styles.right}>
