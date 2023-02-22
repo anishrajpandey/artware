@@ -2,17 +2,25 @@
 import Image from "next/image";
 import styles from "./Design.module.css";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
-
+import Context from "@/context/context";
+import postOrderToMongodb from "@/utils/postOrderToMongodb";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import showToast from "@/utils/showToast";
+import Loading from "@/app/Loading";
 const App = () => {
+  const { userData, isLoggedIn } = useContext(Context);
+
   const [imgSrc, setImgSrc] = useState([]);
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedImageIndex, setFocusedImageIndex] = useState();
   let canvas = useRef(),
     printArea = useRef();
+  let count = 1;
   const Cakes = [
     "/assets/cakes/cake1.jpg",
     "/assets/cakes/cake2.jpg",
@@ -31,22 +39,21 @@ const App = () => {
       }
     ).then((r) => r.json());
     console.log(data);
+    showToast("Uploaded Image: " + count, true);
+    count++;
     return data;
   }
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     let reader = new FileReader();
     reader.onloadend = () => {
-      // setImgSrc([...imgSrc, reader.result]);
       setImgSrc((imgSrc) => [...imgSrc, { src: reader.result }]);
     };
     reader.readAsDataURL(file);
-    console.log(imgSrc);
   };
 
   function toggleImageFocus(e, index) {
     setFocusedImageIndex(index);
-    console.log(index);
 
     [...e.target.parentElement.parentElement.children].forEach((element) => {
       element.children[0].children[0].style.outline = "none";
@@ -70,10 +77,29 @@ const App = () => {
     setIsImageFocused(!isImageFocused);
     imgSrc[focusedImageIndex].height = e.target.value;
   }
-  async function handleOrder() {
+  async function handleOrder(e) {
     setIsLoading(true);
-    imgSrc.forEach((image) => {
-      uploadToCloudinary(image.src);
+    e.preventDefault();
+    window.scrollTo({ top: 0 });
+    const orderSchemaParams = {
+      type: "custom",
+      category: "cake",
+
+      user: userData._id || undefined,
+      price: 900,
+      imgurls: {
+        images: [],
+        productSnapShot: "",
+        printAreaImage: "",
+      },
+      description: e.target[3].value,
+    };
+
+    imgSrc.forEach(async (image) => {
+      await uploadToCloudinary(image.src).then(({ secure_url }) => {
+        orderSchemaParams.imgurls.images.push(secure_url);
+        console.log(orderSchemaParams);
+      });
     });
 
     printArea.current.style.scale = "2";
@@ -82,10 +108,10 @@ const App = () => {
     const canvaselem = await html2canvas(printArea.current);
 
     const image = canvaselem.toDataURL();
-    const a = document.createElement("a");
-    a.href = "data:" + image;
-    a.download = "image.png";
-    a.click();
+    // const a = document.createElement("a");
+    // a.href = "data:" + image;
+    // a.download = "image.png";
+    // a.click();
 
     printArea.current.style.scale = "1";
     printArea.current.style.transform = "translate(50%, -50%)";
@@ -97,15 +123,20 @@ const App = () => {
     const imageWithProduct = newcanvaselem.toDataURL();
     canvas.current.style.scale = "2";
 
-    a.href = "data:" + imageWithProduct;
-    a.download = "image-without-background.png";
-    a.click();
+    // a.href = "data:" + imageWithProduct;
+    // a.download = "image-without-background.png";
+    // a.click();
     canvas.current.style.scale = "1";
 
-    uploadToCloudinary("data:" + imageWithProduct).then((res) => {
-      console.log(res);
+    await uploadToCloudinary("data:" + imageWithProduct).then((res) => {
+      orderSchemaParams.imgurls.productSnapShot = res.secure_url;
     });
-    console.log("all images uploaded");
+    //uploading print area image to cloudinary
+    await uploadToCloudinary("data:" + image).then((res) => {
+      orderSchemaParams.imgurls.printAreaImage = res.secure_url;
+    });
+    console.log("final params object", orderSchemaParams);
+    let result = await postOrderToMongodb(orderSchemaParams);
     setIsLoading(false);
   }
   const handleCakeChange = async (e, src, index) => {
@@ -122,142 +153,162 @@ const App = () => {
       }
   };
   return (
-    <div
-      className={styles.main}
-      style={{
-        opacity: isLoading ? "0.1" : "1",
-        touchAction: isImageFocused ? "none" : "auto",
-      }}
-    >
-      <div className={styles.left}>
-        <div className={styles.addText}>
-          <h2>Customize Your Design</h2>
-        </div>
-        <div
-          className={styles.resizeOptions}
-          style={{ display: imgSrc[0] ? "block" : "none" }}
-        >
-          <h4>Resize Your Image</h4>
-          <label htmlFor="width">
-            Width:
-            <input
-              type="range"
-              className={styles.rangeForSize}
-              min={0}
-              max={100}
-              onChange={resizeImageByWidth}
-              id="width"
-            />
-          </label>
+    <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      {isLoading ? <Loading /> : null}
+      <div
+        className={styles.main}
+        style={{
+          opacity: isLoading ? "0.1" : "1",
+          touchAction: isImageFocused ? "none" : "auto",
+        }}
+      >
+        <div className={styles.left}>
+          <form onSubmit={handleOrder}>
+            <div className={styles.addText}>
+              <h2>Customize Your Design</h2>
+            </div>
+            <div
+              className={styles.resizeOptions}
+              style={{ display: imgSrc[0] ? "block" : "none" }}
+            >
+              <h4>Resize Your Image</h4>
+              <label htmlFor="width">
+                Width:
+                <input
+                  type="range"
+                  className={styles.rangeForSize}
+                  min={0}
+                  max={100}
+                  onChange={resizeImageByWidth}
+                  id="width"
+                />
+              </label>
 
-          <label htmlFor="height">
-            Height:
-            <input
-              type="range"
-              className={styles.rangeForSize}
-              min={0}
-              max={100}
-              onChange={resizeImageByHeight}
-              id="height"
-            />
-          </label>
-        </div>
-        <div className={styles.addImage}>
-          Add Your Image
-          <input
-            type="file"
-            name="image"
-            id="add-image"
-            onChange={handleImageUpload}
-          />
-        </div>
+              <label htmlFor="height">
+                Height:
+                <input
+                  type="range"
+                  className={styles.rangeForSize}
+                  min={0}
+                  max={100}
+                  onChange={resizeImageByHeight}
+                  id="height"
+                />
+              </label>
+            </div>
+            <div className={styles.addImage}>
+              Add Your Image
+              <input
+                type="file"
+                name="image"
+                id="add-image"
+                onChange={handleImageUpload}
+              />
+            </div>
 
-        <h3>More Variations</h3>
-        <div className={styles.Mugsvariation}>
-          {Cakes.map((cake, index) => {
-            return (
-              <div
-                key={index}
-                className={styles.cakes}
-                onClick={(e) => {
-                  handleCakeChange(e, cake, index);
-                }}
+            <h3>More Variations</h3>
+            <div className={styles.Mugsvariation}>
+              {Cakes.map((cake, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={styles.cakes}
+                    onClick={(e) => {
+                      handleCakeChange(e, cake, index);
+                    }}
+                  >
+                    <Image
+                      src={cake}
+                      alt=""
+                      style={{ pointerEvents: "none" }}
+                      width={50}
+                      height={50}
+                    ></Image>
+                  </div>
+                );
+              })}
+            </div>
+            <div className={styles.details}>
+              <h4>Anything More?</h4>
+              <span>(Optional)</span>
+              <textarea
+                name="details"
+                id="details"
+                cols="30"
+                rows="10"
+                placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
+              ></textarea>
+            </div>
+            <div className={styles.buttonWrapper}>
+              <button
+                disabled={!isLoggedIn && !isLoading}
+                className={`orderNowButton ${styles.orderNowButton}`}
+                type="submit"
               >
-                <Image
-                  src={cake}
-                  alt=""
-                  style={{ pointerEvents: "none" }}
-                  width={50}
-                  height={50}
-                ></Image>
-              </div>
-            );
-          })}
+                {isLoggedIn ? "Order Now " : "LogIn First"}
+              </button>
+            </div>
+          </form>
         </div>
-        <div className={styles.details}>
-          <h4>Anything More?</h4>
-          <span>(Optional)</span>
-          <textarea
-            name="details"
-            id="details"
-            cols="30"
-            rows="10"
-            placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
-          ></textarea>
-        </div>
-        <div className={styles.buttonWrapper}>
-          <button
-            onClick={handleOrder}
-            className={`orderNowButton ${styles.orderNowButton}`}
-          >
-            Order Now
-          </button>
-        </div>
-      </div>
-      <div className={styles.right}>
-        <div className={styles.editArea}>
-          <TransformWrapper disabled={isImageFocused}>
-            <TransformComponent>
-              <div
-                className={styles.backgroundItem}
-                ref={canvas}
-                // style={{ backgroundImage: `url(${RedMug.src})` }}
-                onClick={(e) => {
-                  setIsImageFocused(!e.target.className.includes("background"));
-                }}
-              >
-                <div className={styles.printArea} ref={printArea}>
-                  {imgSrc &&
-                    imgSrc.map((source, index) => {
-                      // console.log(source);
-                      return (
-                        <DragAndDrop key={index}>
-                          <div
-                            onPointerDown={(e) => {
-                              toggleImageFocus(e, index);
-                            }}
-                            onTouchEnd={(e) => {
-                              toggleImageFocus(e, index);
-                            }}
-                            className={styles.imageContainer}
-                          >
-                            <Image
-                              src={source.src}
-                              width={200 * 0.02 * source.width || 200}
-                              height={200 * 0.02 * source.height || 200}
-                              alt={"could not load image"}
-                            ></Image>{" "}
-                          </div>
-                        </DragAndDrop>
-                      );
-                    })}
+        <div className={styles.right}>
+          <div className={styles.editArea}>
+            <TransformWrapper disabled={isImageFocused}>
+              <TransformComponent>
+                <div
+                  className={styles.backgroundItem}
+                  ref={canvas}
+                  // style={{ backgroundImage: `url(${RedMug.src})` }}
+                  onClick={(e) => {
+                    setIsImageFocused(
+                      !e.target.className.includes("background")
+                    );
+                  }}
+                >
+                  <div className={styles.printArea} ref={printArea}>
+                    {imgSrc &&
+                      imgSrc.map((source, index) => {
+                        // console.log(source);
+                        return (
+                          <DragAndDrop key={index}>
+                            <div
+                              onPointerDown={(e) => {
+                                toggleImageFocus(e, index);
+                              }}
+                              onTouchEnd={(e) => {
+                                toggleImageFocus(e, index);
+                              }}
+                              className={styles.imageContainer}
+                            >
+                              <Image
+                                src={source.src}
+                                width={200 * 0.02 * source.width || 200}
+                                height={200 * 0.02 * source.height || 200}
+                                alt={"could not load image"}
+                              ></Image>{" "}
+                            </div>
+                          </DragAndDrop>
+                        );
+                      })}
+                  </div>
                 </div>
-              </div>
-            </TransformComponent>
-          </TransformWrapper>
+              </TransformComponent>
+            </TransformWrapper>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

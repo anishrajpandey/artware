@@ -11,9 +11,9 @@ import postOrderToMongodb from "@/utils/postOrderToMongodb";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import showToast from "@/utils/showToast";
+import Loading from "@/app/Loading";
 const App = () => {
   const { userData, isLoggedIn } = useContext(Context);
-  console.log(isLoggedIn);
   const hoodiesUrl = [
     "/assets/hoodies/hoodie-black.png",
     "/assets/hoodies/hoodie-blue.png",
@@ -27,7 +27,6 @@ const App = () => {
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedImageIndex, setFocusedImageIndex] = useState();
-  const [imageUploadOptions, setImageUploadOptions] = useState();
   let canvas = useRef(),
     printArea = useRef();
   let count = 1;
@@ -42,8 +41,7 @@ const App = () => {
         body: formData,
       }
     ).then((r) => r.json());
-    // console.log(data);
-    console.log("uploaded image ", count);
+
     showToast("Uploaded Image: " + count, true);
     count++;
     return data;
@@ -55,7 +53,6 @@ const App = () => {
       setImgSrc((imgSrc) => {
         return [...imgSrc, { src: reader.result }];
       });
-      console.log(imgSrc);
     };
 
     reader.readAsDataURL(file);
@@ -93,6 +90,7 @@ const App = () => {
     setIsLoading(true);
 
     e.preventDefault();
+    window.scrollTo({ top: 0 });
     const orderSchemaParams = {
       type: "custom",
       category: "hoodie",
@@ -146,7 +144,6 @@ const App = () => {
     });
     //uploading print area image to cloudinary
     await uploadToCloudinary("data:" + image).then((res) => {
-      // console.log(res);
       orderSchemaParams.imgurls.printAreaImage = res.secure_url;
     });
     console.log("final params object", orderSchemaParams);
@@ -172,6 +169,7 @@ const App = () => {
         pauseOnHover
         theme="dark"
       />
+      {isLoading ? <Loading /> : null}
       <div
         className={styles.main}
         style={{
@@ -182,9 +180,7 @@ const App = () => {
         <div className={styles.left}>
           <form onSubmit={handleOrder}>
             <div className={styles.addText}>
-              <h2 onClick={() => console.log(imageUploadOptions)}>
-                Customize Your Design
-              </h2>
+              <h2>Customize Your Design</h2>
             </div>
             <div
               className={styles.resizeOptions}
@@ -262,11 +258,11 @@ const App = () => {
             </div>
             <div className={styles.buttonWrapper}>
               <button
-                disabled={isLoggedIn && isLoading}
+                disabled={!isLoggedIn && !isLoading}
                 className={`orderNowButton ${styles.orderNowButton}`}
                 type="submit"
               >
-                Order Now
+                {isLoggedIn ? "Order Now " : "LogIn First"}
               </button>
             </div>
           </form>

@@ -2,14 +2,18 @@
 import Image from "next/image";
 import styles from "./Design.module.css";
 import { TransformComponent, TransformWrapper } from "react-zoom-pan-pinch";
-import { useRef, useState } from "react";
+import { useRef, useState, useContext } from "react";
 import html2canvas from "html2canvas";
 import DragAndDrop from "./../DragAndDrop";
-import BlackCover from "./../../../public/assets/phonecovers/pc-black.png";
-import WhiteCover from "./../../../public/assets/phonecovers/pc-white.png";
-import TransparentCover from "./../../../public/assets/phonecovers/pc1-transparent.png";
-
+import Context from "@/context/context";
+import postOrderToMongodb from "@/utils/postOrderToMongodb";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import showToast from "@/utils/showToast";
+import Loading from "@/app/Loading";
 const PhoneCoverDesign = () => {
+  const { userData, isLoggedIn } = useContext(Context);
+  let count = 1;
   const Covers = [
     "/assets/phonecovers/pc-black.png",
     "/assets/phonecovers/pc-white.png",
@@ -33,7 +37,9 @@ const PhoneCoverDesign = () => {
         body: formData,
       }
     ).then((r) => r.json());
-    // console.log(data);
+
+    showToast("Uploaded Image: " + count, true);
+    count++;
     return data;
   }
   const handleImageUpload = (e) => {
@@ -76,9 +82,30 @@ const PhoneCoverDesign = () => {
 
   async function handleOrder() {
     setIsLoading(true);
-    imgSrc.forEach((image) => {
-      uploadToCloudinary(image.src);
+
+    e.preventDefault();
+    window.scrollTo({ top: 0 });
+    const orderSchemaParams = {
+      type: "custom",
+      category: "phonecover",
+
+      user: userData._id || undefined,
+      price: 900,
+      imgurls: {
+        images: [],
+        productSnapShot: "",
+        printAreaImage: "",
+      },
+      description: e.target[3].value,
+    };
+
+    imgSrc.forEach(async (image) => {
+      await uploadToCloudinary(image.src).then(({ secure_url }) => {
+        orderSchemaParams.imgurls.images.push(secure_url);
+        console.log(orderSchemaParams);
+      });
     });
+
     printArea.current.style.overflow = "visible";
 
     // printArea.current.style.scale = "2";
@@ -88,10 +115,10 @@ const PhoneCoverDesign = () => {
     const canvaselem = await html2canvas(printArea.current);
 
     const image = canvaselem.toDataURL();
-    const a = document.createElement("a");
-    a.href = "data:" + image;
-    a.download = "image.png";
-    a.click();
+    // const a = document.createElement("a");
+    // a.href = "data:" + image;
+    // a.download = "image.png";
+    // a.click();
 
     // printArea.current.style.scale = "1";
     // printArea.current.style.transform = "translate(50%, -50%)";
@@ -103,17 +130,20 @@ const PhoneCoverDesign = () => {
     const imageWithProduct = newcanvaselem.toDataURL();
     // canvas.current.style.scale = "2";
 
-    a.href = "data:" + imageWithProduct;
-    a.download = "image-without-background.png";
-    a.click();
+    // a.href = "data:" + imageWithProduct;
+    // a.download = "image-without-background.png";
+    // a.click();
     // canvas.current.style.scale = "1";
 
-    uploadToCloudinary("data:" + imageWithProduct).then((res) => {
-      console.log(res);
+    await uploadToCloudinary("data:" + imageWithProduct).then((res) => {
+      orderSchemaParams.imgurls.productSnapShot = res.secure_url;
     });
-    printArea.current.style.overflow = "hidden";
-
-    console.log("all images uploaded");
+    //uploading print area image to cloudinary
+    await uploadToCloudinary("data:" + image).then((res) => {
+      orderSchemaParams.imgurls.printAreaImage = res.secure_url;
+    });
+    console.log("final params object", orderSchemaParams);
+    let result = await postOrderToMongodb(orderSchemaParams);
     setIsLoading(false);
   }
   const handleCoverChange = async (e, src) => {
@@ -125,157 +155,177 @@ const PhoneCoverDesign = () => {
     }
   };
   return (
-    <div
-      className={styles.main}
-      style={{
-        opacity: isLoading ? "0.1" : "1",
-        touchAction: isImageFocused ? "none" : "auto",
-      }}
-    >
-      <div className={styles.left}>
-        <div className={styles.addText}>
-          <h2>Customize Your Design</h2>
-        </div>
-        <div
-          className={styles.resizeOptions}
-          style={{ display: imgSrc[0] ? "block" : "none" }}
-        >
-          <h4>Resize Your Image</h4>
-          <label htmlFor="width">
-            Width:
-            <input
-              type="range"
-              className={styles.rangeForSize}
-              min={0}
-              max={100}
-              onChange={resizeImageByWidth}
-              id="width"
-            />
-          </label>
+    <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
+      {isLoading ? <Loading /> : null}
+      <div
+        className={styles.main}
+        style={{
+          opacity: isLoading ? "0.1" : "1",
+          touchAction: isImageFocused ? "none" : "auto",
+        }}
+      >
+        <div className={styles.left}>
+          <form onSubmit={handleOrder}>
+            <div className={styles.addText}>
+              <h2>Customize Your Design</h2>
+            </div>
+            <div
+              className={styles.resizeOptions}
+              style={{ display: imgSrc[0] ? "block" : "none" }}
+            >
+              <h4>Resize Your Image</h4>
+              <label htmlFor="width">
+                Width:
+                <input
+                  type="range"
+                  className={styles.rangeForSize}
+                  min={0}
+                  max={100}
+                  onChange={resizeImageByWidth}
+                  id="width"
+                />
+              </label>
 
-          <label htmlFor="height">
-            Height:
+              <label htmlFor="height">
+                Height:
+                <input
+                  type="range"
+                  className={styles.rangeForSize}
+                  min={0}
+                  max={100}
+                  onChange={resizeImageByHeight}
+                  id="height"
+                />
+              </label>
+            </div>
+            <div className={styles.addImage}>
+              Add Your Image
+              <input
+                type="file"
+                name="image"
+                id="add-image"
+                onChange={handleImageUpload}
+              />
+            </div>
+            <h3>More Variations</h3>
+            <div className={styles.Coversvariation}>
+              {Covers.map((Cover, index) => {
+                return (
+                  <div
+                    key={index}
+                    className={styles.Covers}
+                    onClick={(e) => {
+                      handleCoverChange(e, Cover);
+                    }}
+                  >
+                    <Image
+                      src={Cover}
+                      alt=""
+                      style={{ pointerEvents: "none" }}
+                      width={50}
+                      height={100}
+                    ></Image>
+                  </div>
+                );
+              })}
+            </div>
+            Choose your own color:
             <input
-              type="range"
-              className={styles.rangeForSize}
-              min={0}
-              max={100}
-              onChange={resizeImageByHeight}
-              id="height"
+              type="color"
+              name="color"
+              id="colorinput"
+              onChange={handleCoverChange}
             />
-          </label>
-        </div>
-        <div className={styles.addImage}>
-          Add Your Image
-          <input
-            type="file"
-            name="image"
-            id="add-image"
-            onChange={handleImageUpload}
-          />
-        </div>
-        <h3>More Variations</h3>
-        <div className={styles.Coversvariation}>
-          {Covers.map((Cover, index) => {
-            return (
-              <div
-                key={index}
-                className={styles.Covers}
-                onClick={(e) => {
-                  handleCoverChange(e, Cover);
-                }}
+            <div className={styles.details}>
+              <h4>Anything More?</h4>
+              <span>(Optional)</span>
+              <textarea
+                name="details"
+                id="details"
+                cols="30"
+                rows="10"
+                placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
+              ></textarea>
+            </div>
+            <div className={styles.buttonWrapper}>
+              <button
+                disabled={!isLoggedIn && !isLoading}
+                className={`orderNowButton ${styles.orderNowButton}`}
+                type="submit"
               >
-                <Image
-                  src={Cover}
-                  alt=""
-                  style={{ pointerEvents: "none" }}
-                  width={50}
-                  height={100}
-                ></Image>
-              </div>
-            );
-          })}
+                {isLoggedIn ? "Order Now " : "LogIn First"}
+              </button>
+            </div>
+          </form>
         </div>
-        Choose your own color:
-        <input
-          type="color"
-          name="color"
-          id="colorinput"
-          onChange={handleCoverChange}
-        />
-        <div className={styles.details}>
-          <h4>Anything More?</h4>
-          <span>(Optional)</span>
-          <textarea
-            name="details"
-            id="details"
-            cols="30"
-            rows="10"
-            placeholder="Tell Us more about how you want your product to be customized. It helps us to better understand your order..."
-          ></textarea>
-        </div>
-        <div className={styles.buttonWrapper}>
-          <button
-            onClick={handleOrder}
-            className={`orderNowButton ${styles.orderNowButton}`}
-          >
-            Order Now
-          </button>
-        </div>
-      </div>
-      <div className={styles.right}>
-        <div className={styles.editArea}>
-          <TransformWrapper disabled={isImageFocused}>
-            <TransformComponent>
-              <div
-                className={styles.backgroundItem}
-                onClick={(e) => {
-                  setIsImageFocused(!e.target.className.includes("background"));
-                }}
-                ref={canvas}
-              >
-                <div className={styles.cameraLens}>
-                  <Image
-                    src={"/assets/phonecovers/cameralens.png"}
-                    fill
-                    alt=""
-                  ></Image>
-                </div>
-                <div className={styles.printArea} ref={printArea}>
-                  {imgSrc &&
-                    imgSrc.map((source, index) => {
-                      // console.log(source);
-                      return (
-                        <DragAndDrop key={index}>
-                          <div
-                            onPointerDown={(e) => {
-                              toggleImageFocus(e, index);
-                            }}
-                            onTouchEnd={(e) => {
-                              toggleImageFocus(e, index);
-                            }}
-                            className={styles.imageContainer}
-                          >
-                            <Image
-                              onClick={(e) => {
-                                console.log(e);
+        <div className={styles.right}>
+          <div className={styles.editArea}>
+            <TransformWrapper disabled={isImageFocused}>
+              <TransformComponent>
+                <div
+                  className={styles.backgroundItem}
+                  onClick={(e) => {
+                    setIsImageFocused(
+                      !e.target.className.includes("background")
+                    );
+                  }}
+                  ref={canvas}
+                >
+                  <div className={styles.cameraLens}>
+                    <Image
+                      src={"/assets/phonecovers/cameralens.png"}
+                      fill
+                      alt=""
+                    ></Image>
+                  </div>
+                  <div className={styles.printArea} ref={printArea}>
+                    {imgSrc &&
+                      imgSrc.map((source, index) => {
+                        // console.log(source);
+                        return (
+                          <DragAndDrop key={index}>
+                            <div
+                              onPointerDown={(e) => {
+                                toggleImageFocus(e, index);
                               }}
-                              src={source.src}
-                              width={200 * 0.02 * source.width || 200}
-                              height={290 * 0.02 * source.height || 270}
-                              alt={"could not load image"}
-                            ></Image>{" "}
-                          </div>
-                        </DragAndDrop>
-                      );
-                    })}
+                              onTouchEnd={(e) => {
+                                toggleImageFocus(e, index);
+                              }}
+                              className={styles.imageContainer}
+                            >
+                              <Image
+                                onClick={(e) => {
+                                  console.log(e);
+                                }}
+                                src={source.src}
+                                width={200 * 0.02 * source.width || 200}
+                                height={290 * 0.02 * source.height || 270}
+                                alt={"could not load image"}
+                              ></Image>{" "}
+                            </div>
+                          </DragAndDrop>
+                        );
+                      })}
+                  </div>
                 </div>
-              </div>
-            </TransformComponent>
-          </TransformWrapper>
+              </TransformComponent>
+            </TransformWrapper>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
