@@ -203,8 +203,9 @@
 }
 @media screen and (width<1000px) {
   .loadingText {
-    bottom: 0;
-    width: 100vh;
+    top: 80px;
+    width: 100vw;
+    padding: 0 1rem;
     font-size: 1rem;
   }
 }

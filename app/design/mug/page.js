@@ -83,7 +83,7 @@ const App = () => {
     setIsImageFocused(!isImageFocused);
     imgSrc[focusedImageIndex].height = e.target.value;
   }
-  async function handleOrder() {
+  async function handleOrder(e) {
     setIsLoading(true);
 
     e.preventDefault();
@@ -211,7 +211,7 @@ const App = () => {
               Add Your Image
               <input
                 type="file"
-                name="image"
+                // name="image"
                 id="add-image"
                 onChange={handleImageUpload}
               />
@@ -242,7 +242,7 @@ const App = () => {
               <h4>Anything More?</h4>
               <span>(Optional)</span>
               <textarea
-                name="details"
+                // name="details"
                 id="details"
                 cols="30"
                 rows="10"
@@ -253,7 +253,7 @@ const App = () => {
               <button
                 disabled={!isLoggedIn && !isLoading}
                 className={`orderNowButton ${styles.orderNowButton}`}
-                type="submit"
+                // type="submit"
               >
                 {isLoggedIn ? "Order Now " : "LogIn First"}
               </button>

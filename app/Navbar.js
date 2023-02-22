@@ -29,7 +29,7 @@ const Navbar = () => {
                 <Link href={"/design/cake"}>cake</Link>
               </li>
               <li>
-                <Link href={"/design/phonecase"}>phonecase</Link>
+                <Link href={"/design/phonecover"}>phonecover</Link>
               </li>
               <li>
                 <Link href={"/account"}>account</Link>

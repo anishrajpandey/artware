@@ -84,7 +84,7 @@ const App = () => {
     setIsImageFocused(!isImageFocused);
     imgSrc[focusedImageIndex].height = e.target.value;
   }
-  async function handleOrder() {
+  async function handleOrder(e) {
     setIsLoading(true);
 
     e.preventDefault();
