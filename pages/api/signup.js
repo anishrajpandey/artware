@@ -17,7 +17,6 @@ export default async function handler(req, res) {
   if (!previousRecords) {
     parsedObject.password = hashedPassword;
     let userdata = new users(parsedObject);
-    console.log(userdata);
     if (userdata) {
       res.json({
         success: true,

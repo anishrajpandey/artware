@@ -21,6 +21,11 @@ const App = () => {
   const [isImageFocused, setIsImageFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedImageIndex, setFocusedImageIndex] = useState();
+  const [imageUploadOptions, setImageUploadOptions] = useState({
+    images: [String],
+    productSnapShot: String,
+    printAreaImage: String,
+  });
   let canvas = useRef(),
     printArea = useRef();
 
@@ -35,7 +40,7 @@ const App = () => {
         body: formData,
       }
     ).then((r) => r.json());
-    console.log(data);
+    // console.log(data);
     return data;
   }
   const handleImageUpload = (e) => {
@@ -79,7 +84,9 @@ const App = () => {
   async function handleOrder() {
     setIsLoading(true);
     imgSrc.forEach((image) => {
-      uploadToCloudinary(image.src);
+      uploadToCloudinary(image.src).then((r) => {
+        console.log(r.secure_url);
+      });
     });
 
     printArea.current.style.scale = "2";
@@ -109,7 +116,7 @@ const App = () => {
     canvas.current.style.scale = "1";
 
     uploadToCloudinary("data:" + imageWithProduct).then((res) => {
-      console.log(res);
+      // console.log(res);
     });
     console.log("all images uploaded");
     setIsLoading(false);

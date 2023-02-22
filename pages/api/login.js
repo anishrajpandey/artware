@@ -5,9 +5,7 @@ export default async function handler(req, res) {
   if (!mongoose.connections[0].readyState) {
     mongoose.connect(process.env.MONGODB_URI);
   }
-  // res.json({ hello: "wprld" });
   const parsedObject = JSON.parse(req.body);
-  // res.json({ parsedObject });
 
   let data = await users.findOne({ phone: parsedObject.phone });
   console.log(data);
