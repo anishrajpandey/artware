@@ -1,7 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import ContextProvider from "@/context/useContext";
-import Loading from "./Loading";
+
 const Index = () => {
   return (
     <div>
