@@ -17,19 +17,19 @@ const Navbar = () => {
           {showDropdown && (
             <ul>
               <li>
-                <Link href={"/design/tshirt"}>tshirt</Link>
+                <Link href={"design/tshirt"}>tshirt</Link>
               </li>
               <li>
-                <Link href={"/design/hoodie"}>hoodie</Link>
+                <Link href={"design/hoodie"}>hoodie</Link>
               </li>
               <li>
-                <Link href={"/design/mug"}>mug</Link>
+                <Link href={"design/mug"}>mug</Link>
               </li>
               <li>
-                <Link href={"/design/cake"}>cake</Link>
+                <Link href={"design/cake"}>cake</Link>
               </li>
               <li>
-                <Link href={"/design/phonecover"}>phonecover</Link>
+                <Link href={"design/phonecover"}>phonecover</Link>
               </li>
               <li>
                 <Link href={"/account"}>account</Link>
