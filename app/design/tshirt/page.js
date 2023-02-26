@@ -10,7 +10,7 @@ import postOrderToMongodb from "@/utils/postOrderToMongodb";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import showToast from "@/utils/showToast";
-import Loading from "@/app/loading";
+import Loading from "@/app/Loading";
 const App = () => {
   const { userData, isLoggedIn } = useContext(Context);
   let count = 1;
